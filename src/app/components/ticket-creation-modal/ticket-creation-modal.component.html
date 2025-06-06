@@ -1,0 +1,85 @@
+<!-- Modal -->
+<div
+    class="modal fade"
+    [id]="modalId"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="myModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="btn header-btn"
+                [ngStyle]="{visibility: (processStep > 0) ? 'visible' : 'hidden'}"
+                (click)="prevStep()">
+                &lt;
+              </button>
+                <img src="assets/images/megaphone.svg" alt="imagen megafono"/>
+              <button type="button" class="btn header-btn" data-bs-dismiss="modal"
+              (click)="CancelTicket()">
+                X
+              </button>
+            </div>
+            <div class="modal-body modal-body-scroll">
+
+              <!-- Changes the modal content to match the step in the process -->
+              <div [ngSwitch]="processStep" id="modalSwitch">
+
+                <div id="dependencySelectionDiv" *ngSwitchCase="0">
+
+                  <div class="form-check" *ngFor="let dependency of MunicipalDependenciesArr">
+                    <label class="form-check-label" for="flexRadioDefault1">
+                      {{dependency}}
+                    </label>
+
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
+                      (click)="setDependency(dependency)">
+                  </div>
+                </div>
+
+                <div id="descriptionDiv" *ngSwitchCase="1">
+                  <label for="descriptionInput">Descripción</label>
+                  <input type="text" name="" id="descriptionInput" [maxLength]="maxLengthDesc">
+                  <button class="img-btn">
+                    <img src="assets/images/upload_img.svg" alt="Upload image">
+                    Subir imagen
+                  </button>
+                </div>
+
+                <div id="ticketSumaryDiv" *ngSwitchCase="2">
+
+                  <label for="descriptionInput">Descripción</label>
+                  <input readonly type="text" name="" id="descriptionInput"
+                    [maxLength]="maxLengthDesc" [value]="ticket.description">
+
+                  <label for="">Fecha y Hora</label>
+                  <p>{{formatDateTime(ticket.dateTime)}}</p>
+                  <!-- <p>Fecha seleccionada: {{ ticket.dateTime }}</p> -->
+
+                 <!--  <label for="datetime">Fecha y Hora</label>
+                  <input type="datetime" name="" id="dateTime" readonly> -->
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="nextStep()"
+                [ngStyle]="{display: (processStep >= 0 && processStep < 2) ? 'block' : 'none'}">
+                    Continuar
+                </button>
+                <button type="button" class="btn btn-primary"
+                [ngStyle]="{display: (processStep === 2) ? 'block' : 'none'}">
+                    Confirmar
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                (click)="CancelTicket()"
+                [ngStyle]="{display: (processStep === 2) ? 'block' : 'none'}">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

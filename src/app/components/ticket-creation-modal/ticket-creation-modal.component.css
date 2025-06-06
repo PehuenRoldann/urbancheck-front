@@ -1,0 +1,133 @@
+:root {
+  --inp-text-dvw: 70dvw;
+  --inp-text-dvh: 40vh;
+  --inp-text-pad: 2px;
+}
+
+.modal-content{
+  background-color: black;
+  height: 65dvh;
+}
+
+.modal-body{
+  height: 100%;
+  /* background-color: red; */
+
+  & #modalSwitch {
+    height: 100%;
+  }
+}
+
+.modal-body-scroll {
+  /* max-height: 60vh; */
+  /* Ajusta el valor según el tamaño deseado */
+  overflow-y: auto;
+}
+
+.modal-header,
+.modal-footer {
+  position: sticky;
+  top: 0;
+  /* Para el header */
+  bottom: 0;
+  /* Para el footer */
+  z-index: 10;
+  /* Asegura que siempre estén por encima del contenido scrollable */
+  /* Fondo para evitar que el scroll pase por encima */
+}
+
+/* .dependencySelectionDiv{
+  overflow-y: hidden;
+} */
+
+.form-check {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  border-bottom: 1px solid white;
+}
+
+.form-check > label {
+  font-size: 16pt;
+  color: whitesmoke;
+}
+
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-btn{
+  background-color: azure;
+  color: black; /* Tiene que ser del mismo que el fondo*/
+  border-radius: 100px;
+}
+
+
+#descriptionDiv {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+
+  border: 1px solid white;
+
+  & label {
+
+    width: 100%;
+    text-align: start;
+
+  }
+  & input[type="text"]{
+    width: var(--inp-text-dvw);
+    height: 50%;
+    padding: var(--inp-text-pad);
+
+  }
+}
+
+.img-btn {
+  width: 50dvw;
+  height: 8dvh;
+  background-color: aquamarine;
+  border-radius: 20px;
+}
+
+#ticketSumaryDiv {
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  & label {
+
+    width: 100%;
+    text-align: start;
+
+  }
+
+  & input[type="datetime"] {
+    width: 100%;
+  }
+
+  & input[type="text"]{
+    width: var(--inp-text-dvw);
+    height: 50%;
+    padding: var(--inp-text-pad);
+
+  }
+}

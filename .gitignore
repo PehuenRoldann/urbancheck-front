@@ -1,0 +1,97 @@
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/yarn-error.log
+/package-lock.json
+/pnpm-lock.yaml
+/yarn.lock
+web-app/
+urbancheck-fe-build/
+
+# Angular specific files
+.angular
+.angular/cache
+.angular/cli
+
+# Dependency directories
+/node_modules
+jspm_packages/
+
+# IDEs and editors
+/.idea
+/.vscode
+/*.suo
+/*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.DS_Store
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+urbancheck-front-app/src/environments/environment.*.ts
+# Output of 'npm pack'
+*.tgz
+
+# Coverage directory used by tools like istanbul
+/coverage
+
+# Native binary node modules
+node_modules/
+*.node
+
+# Optional npm cache directory
+.npm
+
+# Output of 'npm pack'
+*.tgz
+
+# Storybook build outputs
+out/
+
+# Optional eslint cache
+.eslintcache
+
+# Temporary files
+*.tmp
+*.temp
+
+# Stylelint cache
+.stylelintcache
+
+# TypeScript
+*.tsbuildinfo
+
+# JetBrains IDEs
+.idea/
+.idea/*
+
+# WebStorm
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+
+# Local history
+.idea/localHistory
+
+# VSCode files
+.vscode/
+
+# Mac files
+.DS_Store
+
+# ConfigFIles
+environment.*.ts
