@@ -1,42 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
-import { KeycloakProfile } from 'keycloak-js';
-import { ApiService } from './core/services/apiservice.service';
-import { ITestResponse } from './core/models/response.interface';
+import { Component, OnInit } from "@angular/core";
+import { KeycloakService } from "keycloak-angular";
+import { KeycloakProfile } from "keycloak-js";
+import { ApiService } from "./core/services/apiservice.service";
+import { ITestResponse } from "./core/models/response.interface";
+import { UserService } from "./services/user.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
 })
 export class AppComponent implements OnInit {
-  title = 'Urbancheck';
+  title = "Urbancheck";
   public isLogueado = false;
-  public testResponse : ITestResponse  | null = null;
+  public testResponse: ITestResponse | null = null;
   public apiPing = "";
   public apiConectorPing = "";
   public perfilUsuario: KeycloakProfile | null = null;
   public role = false;
-  constructor(private readonly keycloak: KeycloakService,private apiService: ApiService) {}
+  constructor(
+    private readonly keycloak: KeycloakService,
+    private userService: UserService,
+  ) {}
 
   public async ngOnInit() {
-
     this.isLogueado = await this.keycloak.isLoggedIn();
-    this.role=await this.keycloak.isUserInRole("ROLE-A");
-    this.apiService.getTest().subscribe(resp => {this.testResponse= resp});
-    this.apiService.getPing().subscribe(resp => {this.apiPing= resp});
-    this.apiService.getConectorPing().subscribe(resp => {this.apiConectorPing= resp});
+    const token = await this.keycloak.getToken();
+
     // console.log ("role=====>", this.role );
-    
+
     /* if(this.isLogueado && !this.role){
       this.keycloak.logout();
       return;
     } */
 
-    type rolesUsuarios = Array<{id: number, text: string}>;
+    console.log("DEBUG >> IS LOGEADO");
+    console.log(this.isLogueado);
 
     if (this.isLogueado) {
-      this.perfilUsuario = await this.keycloak.loadUserProfile();
+      console.log("HOLAAAAA");
+      const user = await this.userService.syncUserToBackend();
+      console.log("DEBUG >> USER");
+      console.log(user);
     }
   }
 

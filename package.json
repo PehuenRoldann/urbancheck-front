@@ -26,6 +26,7 @@
     "@popperjs/core": "^2.11.8",
     "@types/mapbox-gl": "^2.6.1",
     "bootstrap": "^5.3.3",
+    "graphql-request": "^7.2.0",
     "jquery": "^3.7.1",
     "keycloak-angular": "^14.1.0",
     "keycloak-js": "^22.0.1",
