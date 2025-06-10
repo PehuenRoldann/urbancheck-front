@@ -1,4 +1,4 @@
-import MunicipalDependencies from "./municipalDependencie";
+import MunicipalIssues from "./municipalDependencie";
 import { TicketStates } from "./ticketStates";
 
 export class Ticket {
@@ -9,10 +9,10 @@ export class Ticket {
   private _lng: number = 0;
   private _finalCost: number = 0;
   private _dateTime: number = Date.now();
-  private _dependency!: MunicipalDependencies;
+  private _dependency!: MunicipalIssues;
   private _createdBy: string = '';
   private _modifiedBy: string = '';
-  private _state: TicketStates = TicketStates.Creado;
+  private _state: TicketStates = TicketStates.Pendiente;
   private _imgUrl: string = '';
 
   constructor(data?: Partial<Ticket>) {
@@ -86,7 +86,7 @@ export class Ticket {
   get dependency() {
     return this._dependency;
   }
-  set dependency(value: MunicipalDependencies) {
+  set dependency(value: MunicipalIssues) {
     this._dependency = value;
   }
 
@@ -116,5 +116,26 @@ export class Ticket {
   }
   set imgUrl(value: string) {
     this._imgUrl = value;
+  }
+
+  get actualDate() {
+    return new Date(this.dateTime)
+  }
+
+
+  static fromJson(json: any): Ticket 
+  { 
+    const dependency = MunicipalIssues[json.dependencia.nombre.replace(/\s/g, '') as keyof typeof MunicipalIssues]; 
+    const ticket = new Ticket({ 
+      id: json.id.toString(),
+      description: json.descripcion,
+      lat: json.latitud,
+      lng: json.longitudes,
+      finalCost: json.costoFinal,
+      dateTime: new Date(json.fechaHora).getTime(),
+      dependency: dependency,
+      createdBy: json.creadoPor.email,
+      state: TicketStates[json.estado.replace(/\s/g, '') as keyof typeof TicketStates] }); // Si es necesario, puedes mapear otras propiedades o realizar conversiones adicionales aquí 
+      return ticket;
   }
 }

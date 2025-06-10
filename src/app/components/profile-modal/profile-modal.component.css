@@ -1,0 +1,87 @@
+/* Modal background color */
+.modal-content {
+    background-color: #6e7f8bec;
+    color: white;
+    border-radius: 8px;
+  }
+  
+  /* Centrar el título */
+  .modal-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    position: relative;
+  }
+  
+  /* Estilo para el botón de cierre */
+  .modal-header .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: white;
+    color: black;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .modal-header .close:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Estilo para la lista de perfil */
+  .profile-list {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+  }
+  
+  .profile-list li {
+    margin: 10px 0;
+  }
+  
+  .profile-list li strong {
+    margin-right: 10px;
+  }
+  
+  /* Placeholder styling */
+  .placeholder {
+    color: gray;
+    font-style: italic;
+  }
+  
+
+   .modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   }
+  /* Estilo para el botón de cerrar sesión */
+  .modal-footer .btn-danger {
+    background-color: rgba(201, 12, 12, 0.986);
+    border: none;
+  }
+  
+  .modal-footer .btn-danger:hover {
+    background-color: darkred;
+  }
+
+  .profile-img-div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .profile-img-div img {
+    height: 10vh;
+    aspect-ratio: 1/1;
+  }

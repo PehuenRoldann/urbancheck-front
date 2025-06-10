@@ -1,7 +1,10 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { TicketDataService } from "src/app/interfaces/ticket-data-service";
-import { GeolocationService } from "src/app/services/geolocation.service";
-import { TicketDataJsonService } from "src/app/services/ticket-data-json.service";
+import { Component, OnInit, Inject, ViewChild } from "@angular/core";
+import { TicketServiceInterface, TICKET_SERVICE_INTERFACE_TOKEN } from "src/app/interfaces/ticket.service.interface";
+import { MapServiceInterface, MAP_SERVICE_INTERFACE_TOKEN } from "src/app/interfaces/map.service.interface";
+// import { MapboxService } from "src/app/services/mapbox.service";
+// import { TicketDataJsonService } from "src/app/services/ticket-data-json.service";
+import { TicketViewModalComponent } from "../ticket-view-modal/ticket-view-modal.component";
+import { MarkerData } from "src/app/models/markerData";
 /* import mapboxgl from 'mapbox-gl'; */
 
 declare var bootstrap: any;
@@ -14,13 +17,17 @@ declare var bootstrap: any;
 export class MapCommonComponent implements OnInit {
   public currentCoorsd: { lng: number; lat: number } = { lng: 0, lat: 0 };
   public mapStatus!: number;
+  @ViewChild(TicketViewModalComponent)
+  ticketViewModal!: TicketViewModalComponent;
+  public markersData!: MarkerData[];
 
   constructor(
-    private geoService: GeolocationService,
-    private ticketDataService: TicketDataJsonService
+    @Inject(TICKET_SERVICE_INTERFACE_TOKEN) private ticketDataService: TicketServiceInterface,
+    @Inject(MAP_SERVICE_INTERFACE_TOKEN) private geoService: MapServiceInterface
   ) {}
 
   async ngOnInit(): Promise<void> {
+    
     this.geoService.initializeMap('map');
 
     this.geoService.lastCoords$.subscribe((coords) => {
@@ -35,13 +42,18 @@ export class MapCommonComponent implements OnInit {
     });
 
     this.geoService.lastMarkerClickedSubject$.subscribe((markerData) => {
-      console.log("Marker data: " + markerData);
-      
       this.openModal('ticketViewModal');
+      this.ticketViewModal.GetTicketWithId(markerData.id);
+    });
+
+    this.ticketDataService.markersData$.subscribe((markerDataRes) => {
+
+      this.markersData = markerDataRes.length > 0? markerDataRes : [];
+
+      this.geoService.DrawMarkers(this.markersData);
     })
 
-    let markersData = await this.ticketDataService.GetMarkers();
-    this.geoService.DrawMarkers(markersData);
+    this.ticketDataService.UpdateMarkersData();
   }
 
   /**
@@ -60,5 +72,27 @@ export class MapCommonComponent implements OnInit {
 
   public removeLastMark(event?: Event): void {
     this.geoService.removeLastMark();
+  }
+
+
+
+  showAlert(message: string, type: string): void {
+    const alert = document.createElement('div');
+    alert.classList.add('alert', `alert-${type}`, 'alert-dismissible', 'fade', 'show');
+    alert.setAttribute('role', 'alert');
+    alert.innerHTML = `
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    document.body.appendChild(alert);
+
+    setTimeout(() => {
+      alert.remove();
+    }, 5000); // La alerta desaparece después de 5 segundos
+  }
+
+  // Método para manejar el evento emitido por el modal
+  onTicketCreated(result: any): void {
+    this.ticketDataService.UpdateMarkersData();
   }
 }

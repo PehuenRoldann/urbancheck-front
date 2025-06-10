@@ -38,10 +38,21 @@
                   </div>
                 </div>
 
+
                 <div id="descriptionDiv" *ngSwitchCase="1">
                   <label for="descriptionInput">Descripción</label>
-                  <input type="text" name="" id="descriptionInput" [maxLength]="maxLengthDesc">
-                  <button class="img-btn">
+                  <textarea 
+                      id="descriptionInput" 
+                      class="description-box" 
+                      [maxLength]="maxLengthDesc" 
+                      [(ngModel)]="ticket.description">
+                  </textarea>
+                  <p class="warning-p-descripton"
+                  [ngStyle]="{visibility: ticket.description.length < 20 ? 'visible' : 'hidden'}"
+                  >* Al menos 20 caracteres...</p>
+                  
+
+                  <button class="img-btn" disabled><!--  desactivado, no lo vamos a hacer ahora -->
                     <img src="assets/images/upload_img.svg" alt="Upload image">
                     Subir imagen
                   </button>
@@ -49,16 +60,27 @@
 
                 <div id="ticketSumaryDiv" *ngSwitchCase="2">
 
+                  <label>Problemática</label>
+                  <p>{{getMunicipalDependencyLabel(ticket.dependency)}}</p>
+
                   <label for="descriptionInput">Descripción</label>
-                  <input readonly type="text" name="" id="descriptionInput"
-                    [maxLength]="maxLengthDesc" [value]="ticket.description">
+                  <textarea 
+                      class="description-box" 
+                      [maxLength]="maxLengthDesc" 
+                      [(ngModel)]="ticket.description">
+                  </textarea>
 
                   <label for="">Fecha y Hora</label>
                   <p>{{formatDateTime(ticket.dateTime)}}</p>
-                  <!-- <p>Fecha seleccionada: {{ ticket.dateTime }}</p> -->
 
-                 <!--  <label for="datetime">Fecha y Hora</label>
-                  <input type="datetime" name="" id="dateTime" readonly> -->
+                </div>
+
+                <div class="result-div" *ngSwitchCase="3">
+
+                  <h5>{{res.exito}}</h5>
+                  <h6>{{res.mensaje}}</h6>
+                  <img [src]="res.src" alt="resultado imagen">
+
                 </div>
 
               </div>
@@ -66,18 +88,26 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="nextStep()"
+                <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!CanContinue()"
                 [ngStyle]="{display: (processStep >= 0 && processStep < 2) ? 'block' : 'none'}">
                     Continuar
                 </button>
                 <button type="button" class="btn btn-primary"
-                [ngStyle]="{display: (processStep === 2) ? 'block' : 'none'}">
+                [ngStyle]="{display: (processStep === 2) ? 'block' : 'none'}"
+                (click)="AddTicket()"
+                >
                     Confirmar
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                 (click)="CancelTicket()"
                 [ngStyle]="{display: (processStep === 2) ? 'block' : 'none'}">
                     Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                [ngStyle]="{display: (processStep === 3) ? 'block' : 'none'}"
+                (click)="CancelTicket()"
+                >
+                    Cerrar
                 </button>
             </div>
         </div>

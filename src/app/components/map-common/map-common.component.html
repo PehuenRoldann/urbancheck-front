@@ -15,7 +15,7 @@
 
 
     <nav id="nav-bar">
-        <span class="nav-button"
+        <span class="nav-button" (click)="openModal('profileModal')"
             ><img src="assets/images/Vectorperson.svg" alt=""
         /></span>
         <span class="nav-button"
@@ -40,12 +40,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="myModalLabel">
-                    Confirmar nuevo reclamo!
+                    ¿Desea crear un ticket en esta ubicación?
                 </h5>
             </div>
             <div class="modal-body">
-              <h5>Desea crear un nuevo reclamo en esta ubicación?</h5>
-                <p id="modal-coordinates">Coordenadas:</p>
                 <p>Latitud: {{ currentCoorsd.lat }}</p>
                 <p>Longitud: {{ currentCoorsd.lng }}</p>
             </div>
@@ -72,6 +70,8 @@
 </div>
 
 
-<app-ticket-creation-modal [modalId]="'ticketCrationModal'" (cancelTicket)="removeLastMark($event)"/>
+<app-ticket-creation-modal [modalId]="'ticketCrationModal'" (cancelTicket)="removeLastMark($event)" (ticketCreated)="onTicketCreated($event)"/>
 
 <app-ticket-view-modal [modalId]="'ticketViewModal'"/>
+
+<app-profile-modal [modalId]="'profileModal'" />

@@ -1,27 +1,103 @@
 <!-- Modal -->
-<div class="modal fade" [id]="modalId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">
-            TICKET VIEW MODAL
-          </h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div
+  class="modal fade"
+  [id]="modalId"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content main-container">
+      <div class="modal-header">
+        <p
+          class="modal-title"
+          id="exampleModalLabel"
+          style="width: 100%; text-align: center"
+        >
+          {{ isTicketLoaded ? "Ticket # " + ticket!.id! : "Buscando..." }}
+        </p>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="ResetConditions()"
+        ></button>
+      </div>
+      <div class="modal-body modal-body-scroll">
+        <div
+          *ngIf="
+            !isTicketLoaded;
+            or: !isAddressLoaded;
+            else: ticketDataTemplate
+          "
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+          "
+        >
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
         </div>
-        <div class="modal-body">
-          
-            <div *ngIf="!isTicketLoaded" style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
 
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
+        <ng-template #ticketDataTemplate>
+          <!-- Tabla -->
+          <div class="flex-row-centered-container">
+            <div class="grid-container">
+              <div class="grid-item header">Creado por</div>
+              <div class="grid-item header">Fecha</div>
+              <div class="grid-item header">Estado</div>
+              <div class="grid-item">{{ ticket!.createdBy }}</div>
+              <div class="grid-item">{{ dateFromTicket }}</div>
+              <div class="grid-item ticket-state">
+                <app-pill [ticketState]="ticket?.state ?? ''" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Descripción -->
+          <div class="flex-col-centered-container" id="description_container">
+            <h6 class="title-section">Descripción</h6>
+            <textarea
+              name=""
+              id="description-text-area"
+              readonly
+              [value]="ticket?.description"
+            ></textarea>
+          </div>
+
+          <!-- Imagen -->
+          <div class="flex-col-centered-container ticket-image-container">
+            <img
+              class="ticket-img"
+              [src]="
+                ticket?.image_url
+                  ? ticket?.image_url
+                  : 'assets/images/Image_not_available.png'
+              "
+              alt="Ticket_image"
+            />
+          </div>
+
+          <!-- Dirección -->
+          <div class="flex-col-centered-container" id="address_container">
+            <h6>Dirección</h6>
+            <textarea name="" id="" readonly [value]="address"></textarea>
+          </div>
+        </ng-template>
+      </div>
+      <div class="modal-footer" id="view-modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+         
+        >
+          Suscribirse
+        </button>
       </div>
     </div>
   </div>
-  
+</div>

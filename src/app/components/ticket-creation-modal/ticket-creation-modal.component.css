@@ -1,11 +1,11 @@
 :root {
-  --inp-text-dvw: 70dvw;
+  --inp-text-dvw: 80dvw;
   --inp-text-dvh: 40vh;
   --inp-text-pad: 2px;
 }
 
 .modal-content{
-  background-color: black;
+  background-color: #6e7f8bec;
   height: 65dvh;
 }
 
@@ -82,27 +82,49 @@
   justify-content: space-between;
   height: 100%;
 
-  border: 1px solid white;
+  /* border: 1px solid white; */
 
   & label {
 
     width: 100%;
-    text-align: start;
+    font-size: 16pt;
+    text-align: center;
+    color: white;
+    font-weight: bold;
 
   }
-  & input[type="text"]{
+  /* & input[type="text"]{
     width: var(--inp-text-dvw);
-    height: 50%;
+    height: 45%;
     padding: var(--inp-text-pad);
+    border: 1px white solid;
+    border-radius: 15px;
+    text-align: center;
 
-  }
+  } */
+}
+
+.warning-p-descripton {
+  width: 100%;
+  color: rgba(224, 23, 23, 0.959);
+  font-size: 12pt;
+  text-align: center;
 }
 
 .img-btn {
   width: 50dvw;
-  height: 8dvh;
-  background-color: aquamarine;
+  height: 5dvh;
+  background-color: #00449433;
   border-radius: 20px;
+  border: 0px;
+  font-size: 14pt;
+  align-items: center;
+  color: white;
+
+  & img {
+    height: 4dvh;
+    aspect-ratio: 1/1;
+  }
 }
 
 #ticketSumaryDiv {
@@ -116,7 +138,10 @@
   & label {
 
     width: 100%;
-    text-align: start;
+    font-size: 16pt;
+    text-align: center;
+    color: white;
+    font-weight: bold;
 
   }
 
@@ -124,10 +149,53 @@
     width: 100%;
   }
 
-  & input[type="text"]{
+  /* & input[type="text"]{
     width: var(--inp-text-dvw);
-    height: 50%;
+    height: 45%;
     padding: var(--inp-text-pad);
+    border: 1px white solid;
+    border-radius: 15px;
+    text-align: center;
 
+  } */
+}
+
+
+.modal-pm {
+  background-color: white;
+  font: black;
+  font-weight: bold;
+}
+
+.description-box {
+  width: var(--inp-text-dvw);
+  height: 45%;
+  padding: 2px;
+  border: 1px white solid;
+  border-radius: 15px;
+  text-align: left; /* Cambia a 'left' para texto alineado natural */
+  
+  white-space: pre-wrap; /* Ajusta el texto a la siguiente línea */
+  word-wrap: break-word; /* Ajuste de palabras largas */
+  overflow-wrap: break-word; /* Alternativa moderna */
+  
+  overflow-y: auto; /* Muestra un scroll solo vertical si es necesario */
+  overflow-x: hidden; /* Oculta el scroll horizontal */
+}
+
+.result-div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+
+  color: white;
+  font-weight: bold;
+
+  & img {
+    height: 40%;
+    aspect-ratio: 1/1;
   }
 }

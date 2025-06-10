@@ -1,5 +1,5 @@
 export type MarkerData = {
-    id: number,
-    lng: number,
-    lat: number
+    id: string,
+    longitude: number,
+    latitude: number
 }

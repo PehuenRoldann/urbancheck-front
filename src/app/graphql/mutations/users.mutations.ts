@@ -1,30 +1,35 @@
 import { gql } from "graphql-request";
+export class UserMutations {
+  static readonly LAZYSYNCUSER = gql`
+    mutation LazySyncUser($input: LazySyncUserInput!) {
+      lazySyncUser(input: $input) {
+        ... on User {
+          id
+          auth_provider_id
+          email
+          dni
+          first_name
+          last_name
+          birth_date
+          postal_code
+          street
+          street_number
+          role {
+            id
+            description
+          }
+          its
+          uts
+          dts
+        }
 
-export const LAZYSYNCUSER = gql`
-  mutation LazySyncUser($input: LazySyncUserInput!) {
-    lazySyncUser(input: $input) {
-      ... on User {
-        id
-        authProviderId
-        email
-        dni
-        firstName
-        lastName
-        birthDate
-        postalCode
-        street
-        streetNumber
-        roleId
-        its
-        uts
-        dts
-      }
-
-      ... on ErrorResponse {
-        message
-        code
-        path
+        ... on ErrorResponse {
+          message
+          code
+          path
+        }
       }
     }
-  }
-`;
+  `;
+
+}
