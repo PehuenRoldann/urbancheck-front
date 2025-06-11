@@ -5,6 +5,6 @@ export const environment = {
     realm: 'urbancheck',
     clientId: 'urbancheck-front',
   },
-  backendForFrontendUrl: '/api',
+  backendForFrontendUrl: 'http://localhost:3000/graphql/',
   mapboxApiKey:'',
 };

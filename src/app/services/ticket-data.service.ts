@@ -14,6 +14,7 @@ import { UserQueries } from "@app/graphql/queries/user.queries";
 import { TicketResult } from "@app/graphql/types/ticket.types";
 import { UserResponse } from "@app/graphql/types/user.types";
 import { StatusHistory } from "@app/interfaces/status_history.interface";
+import { environment } from "src/environments/environment";
 
 
 @Injectable({ providedIn: "root" })
@@ -24,7 +25,7 @@ export class TicketService implements TicketServiceInterface {
   private ticketDataSubject = new BehaviorSubject<Ticket | null>(null);
   public ticketData$ = this.ticketDataSubject.asObservable();
 
-  private endpoint = "http://localhost:3000/graphql"; // adaptá según tu backend
+  private endpoint = environment.backendForFrontendUrl; // adaptá según tu backend
 
   constructor(private readonly keycloak: KeycloakService) {}
 

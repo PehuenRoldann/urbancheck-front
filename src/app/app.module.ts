@@ -22,6 +22,8 @@ import { PillComponent } from "./components/pill/pill.component";
 // import { TicketDataApiService } from "./services/ticket-data-api.service";
 import { ProfileModalComponent } from "./components/profile-modal/profile-modal.component";
 import { TicketService } from "./services/ticket-data.service";
+import { PhotoUploadComponent } from './components/photo-upload/photo-upload.component';
+import { NgxFileDropModule } from "ngx-file-drop";
 
 @NgModule({
   declarations: [
@@ -32,6 +34,7 @@ import { TicketService } from "./services/ticket-data.service";
     TicketViewModalComponent,
     PillComponent,
     ProfileModalComponent,
+    PhotoUploadComponent,
     //    ReclamoModalComponent,
   ],
   imports: [
@@ -40,6 +43,7 @@ import { TicketService } from "./services/ticket-data.service";
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    NgxFileDropModule
   ],
   providers: [
     {

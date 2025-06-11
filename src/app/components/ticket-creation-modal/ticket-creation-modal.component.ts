@@ -27,12 +27,14 @@ import { Ticket } from "src/app/models/ticket";
   styleUrls: ["./ticket-creation-modal.component.css"],
 })
 export class TicketCreationModalComponent implements OnInit {
+
   @Input({ required: true }) modalId!: string;
   @Output() ticketCreated: EventEmitter<any> = new EventEmitter();
 
   public readonly maxLengthDesc: number = 250;
   public processStep: number = 0;
   public ticket = new Ticket();
+  public previewUrls: string[] = [];
   public res = {
     exito: "",
     mensaje: "",
@@ -76,6 +78,7 @@ export class TicketCreationModalComponent implements OnInit {
     const dependencyId = getDependencyId(this.ticket.dependency) || 1;
 
     try {
+
       const result = await this.ticketService.AddTicket(
         description,
         dependencyId,
@@ -137,10 +140,14 @@ export class TicketCreationModalComponent implements OnInit {
   }
 
   nextStep() {
+    console.log("DEBUG >> URLS");
+    console.log(this.previewUrls);
     this.processStep++;
     this.ticket.dateTime = Date.now();
   }
   prevStep() {
+    console.log("DEBUG >> URLS");
+    console.log(this.previewUrls);
     this.processStep--;
   }
 
@@ -176,5 +183,12 @@ export class TicketCreationModalComponent implements OnInit {
     } else {
       return true;
     }
+  }
+
+  onFileRemoved() {
+    this.previewUrls = []
+  }
+  onFileAdded($event: string) {
+  this.previewUrls.push($event);
   }
 }

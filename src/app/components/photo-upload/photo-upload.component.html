@@ -1,0 +1,27 @@
+<div class="container photo-uploader-container">
+    <div class="mb-3" *ngIf="previewUrls.length === 0; else previewTemplate">
+      <ngx-file-drop
+        dropZoneLabel="Arrastrá imágenes o hacé clic para seleccionar"
+        (onFileDrop)="dropped($event)"
+        [dropZoneClassName]="'border border-primary rounded p-3 text-center bg-light'"
+      >
+      </ngx-file-drop>
+    </div>
+    
+    <ng-template #previewTemplate>
+        <div class="photo-preview-container">
+            <div class="col-4 flex-preview-image-container" *ngFor="let url of previewUrls">
+              <img [src]="url" class="img-thumbnail img-preview mb-2" alt="preview" />
+            </div>
+          </div>
+          <div>
+            <button
+            (click)="removePhoto()"
+            class="photo-upoad-remove-btn"
+            >
+              Eliminar
+            </button>
+        </div>
+    </ng-template>
+  </div>
+  

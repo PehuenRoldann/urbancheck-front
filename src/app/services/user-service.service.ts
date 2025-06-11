@@ -25,16 +25,8 @@ export interface UserDTO {
   providedIn: "root",
 })
 export class UserServiceService {
-  /*private apiUrl = `${environment.backendForFrontendUrl}/keycloak/user/create`
 
-  constructor(private http: HttpClient) {}
-
-  createUser(userDTO: UserDTO): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<any>(this.apiUrl, userDTO, { headers });
-  } */
-
-  private endpoint = "http://localhost:3000/graphql/"; // tu URL real
+  private endpoint = environment.backendForFrontendUrl;
 
   constructor(private keycloak: KeycloakService) {}
 
