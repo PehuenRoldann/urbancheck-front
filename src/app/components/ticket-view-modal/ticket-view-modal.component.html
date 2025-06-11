@@ -53,7 +53,7 @@
               <div class="grid-item">{{ ticket!.createdBy }}</div>
               <div class="grid-item">{{ dateFromTicket }}</div>
               <div class="grid-item ticket-state">
-                <app-pill [ticketState]="ticket?.state ?? ''" />
+                <app-pill [ticketState]="ticket.state ?? ''" />
               </div>
             </div>
           </div>
@@ -65,7 +65,7 @@
               name=""
               id="description-text-area"
               readonly
-              [value]="ticket?.description"
+              [value]="ticket.description"
             ></textarea>
           </div>
 
@@ -74,8 +74,8 @@
             <img
               class="ticket-img"
               [src]="
-                ticket?.image_url
-                  ? ticket?.image_url
+                ticket.image_url
+                  ? ticket.image_url
                   : 'assets/images/Image_not_available.png'
               "
               alt="Ticket_image"
