@@ -1,11 +1,14 @@
-
-
-<div *ngIf="!isLogueado; else mapTemplate">
-	<h1>Bienvenido a Urbancheck!</h1>
-	<button *ngIf="isLogueado" type="button" (click)="cerrarSesion()">Cerrar Session</button>
-	<button *ngIf="!isLogueado" type="button" (click)="iniciarSesion()">Iniciar Session</button>
+<div class="inicio-container" *ngIf="!isLogueado; else mapTemplate">
+  <div class="login-card">
+    <img src="assets/images/logo.png" alt="Urbancheck Logo" class="logo" />
+    <p class="subtitulo">Inicia sesión para comenzar</p>
+    <div class="botones">
+      <button *ngIf="!isLogueado" (click)="iniciarSesion()">Iniciar Sesión</button>
+      <button *ngIf="isLogueado" (click)="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </div>
 </div>
 
 <ng-template #mapTemplate>
-	<app-map-common></app-map-common>
+  <app-map-common></app-map-common>
 </ng-template>
