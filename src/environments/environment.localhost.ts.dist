@@ -7,4 +7,6 @@ export const environment = {
   },
   backendForFrontendUrl: 'http://localhost:3000/graphql/',
   mapboxApiKey:'',
+  minioUrl: 'http://localhost:9000',
+  minioBucket: 'urbancheck',
 };

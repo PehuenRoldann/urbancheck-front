@@ -7,6 +7,9 @@ import {
   OnInit,
 } from "@angular/core";
 import { ErrorResponse } from "@app/interfaces/error_response.interface";
+import { PhotoManagerService } from "@app/services/photo-manager.service";
+import { UserServiceService } from "@app/services/user-service.service";
+import { delay } from "rxjs";
 import {
   MAP_SERVICE_INTERFACE_TOKEN,
   MapServiceInterface,
@@ -48,6 +51,8 @@ export class TicketCreationModalComponent implements OnInit {
     private ticketService: TicketServiceInterface,
     @Inject(MAP_SERVICE_INTERFACE_TOKEN)
     private mapService: MapServiceInterface,
+    private photoManager: PhotoManagerService,
+    private userService: UserServiceService,
   ) {}
 
   ngOnInit(): void {
@@ -77,13 +82,28 @@ export class TicketCreationModalComponent implements OnInit {
     const latitud = this.ticket.lat;
     const dependencyId = getDependencyId(this.ticket.dependency) || 1;
 
+    let ticketImgUrl: string = '';
+
     try {
+
+      const userData = await this.userService.getUserData();
+
+      delay(2000); // DEBUG 
+      const photo = this.previewUrls.length > 0 ? await this.photoManager.fetchFileFromUrl(this.previewUrls[0]) : null;
+
+
+      if (photo) {
+        ticketImgUrl = await this.photoManager.uploadImage(photo, userData.id);
+      }
+
+      delay(4000); // DEBUG
 
       const result = await this.ticketService.AddTicket(
         description,
         dependencyId,
         longitud,
         latitud,
+        ticketImgUrl
       );
 
       if ("id" in result && "timestamp" in result) {
@@ -122,6 +142,9 @@ export class TicketCreationModalComponent implements OnInit {
         message:
           "Error al crear el ticket, pruebe otra vez o contacte con soporte.",
       });
+    } finally {
+      ticketImgUrl = ''
+      this.previewUrls = [];
     }
 
     this.nextStep();
@@ -140,14 +163,10 @@ export class TicketCreationModalComponent implements OnInit {
   }
 
   nextStep() {
-    console.log("DEBUG >> URLS");
-    console.log(this.previewUrls);
     this.processStep++;
     this.ticket.dateTime = Date.now();
   }
   prevStep() {
-    console.log("DEBUG >> URLS");
-    console.log(this.previewUrls);
     this.processStep--;
   }
 
