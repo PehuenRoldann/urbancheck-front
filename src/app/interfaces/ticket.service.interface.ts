@@ -16,6 +16,7 @@ export interface TicketServiceInterface {
     dependency: number,
     longitud: number,
     latitud: number,
+    ticketImgUrl: string,
   ): Promise<Ticket | ErrorResponse>;
   /**Actualiza el observable con los marcadores.*/
   UpdateMarkersData(): void;

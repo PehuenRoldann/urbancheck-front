@@ -34,6 +34,7 @@ export class TicketService implements TicketServiceInterface {
     dependencyId: number,
     longitud: number,
     latitud: number,
+    ticketImgUrl: string,
   ): Promise<Ticket | ErrorResponse> {
     const token = await this.keycloak.getToken();
 
@@ -49,6 +50,7 @@ export class TicketService implements TicketServiceInterface {
         issueId: dependencyId,
         longitude: longitud,
         latitude: latitud,
+        imageUrl: ticketImgUrl ?? null,
       },
     };
 

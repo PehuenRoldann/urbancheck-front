@@ -7,4 +7,6 @@ export const environment = {
   },
   backendForFrontendUrl: '/api',
   mapboxApiKey:'',
+  minioUrl: 'http://localhost:9000',
+  minioBucket: 'urbancheck',
 };
