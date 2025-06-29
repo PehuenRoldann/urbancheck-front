@@ -26,6 +26,9 @@ export class AppComponent implements OnInit {
     this.isLogueado = await this.keycloak.isLoggedIn();
     const token = await this.keycloak.getToken();
 
+    console.log("DEBUG TOKEN:"); // DEBUG borrar antes de prod
+    console.log(token);
+
     if (this.isLogueado) {
       const user = await this.userService.syncUserToBackend();
 

@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { KeycloakService } from "keycloak-angular";
 import {
-  UserServiceService,
-} from "src/app/services/user-service.service";
+  UserService,
+} from "@app/services/user.service";
 import { User } from "@app/interfaces/user.interface";
 
 @Component({
@@ -17,7 +17,7 @@ export class ProfileModalComponent implements OnInit {
 
   constructor(
     private keycloak: KeycloakService,
-    private userService: UserServiceService,
+    private userService: UserService,
   ) {}
 
   async ngOnInit(): Promise<void> {

@@ -1,4 +1,5 @@
 .ticket-state{
-    padding: 1px;
+    padding: 5px;
     border-radius: 20px;
+    width: fit-content;
   }

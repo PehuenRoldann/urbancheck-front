@@ -1,0 +1,141 @@
+.ticket-admin-panel-main-div {
+    position: fixed;          /* o absolute si preferís */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('/assets/images/map_background.png'); /* ajustá el path */
+    background-size: cover;   /* hace que cubra todo */
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;              /* para que quede detrás del contenido */
+}
+
+.ticket-admin-panel-grey-bg {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    background-color: #4B5C67F1; /* CC = ~80% opacidad */
+    border-radius: 0;
+
+}
+
+.ticket-admin-panel-dashboard-container {
+    
+    display: flex;
+    width: 100%;
+    height: 95vh;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.ticket-admin-panel-nav-container {
+
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
+    width: 100vw;
+    height: 5vh;
+    border-bottom: 1px solid white;
+}
+
+.ticket-admin-panel-nav {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ticket-admin-panel-nav-title {
+    margin-right: 2vw;
+    font-weight: bold;
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.ticket-admin-panel-nav-btn {
+    
+    padding: 8px 12px 8px 12px;
+    border-radius: 5px;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.ticket-admin-panel-nav-btn:hover {
+
+    background-color: #4b5c67fb;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+
+}
+
+.ticket-admin-panel-nav-btn img{
+    
+    width: auto;
+    height: 4vh;
+}
+
+
+.ticket-admin-panel-list-container {
+    width: 65vw;
+    height: 100%;
+    display: inline-block;
+    /* border: 1px solid blue; */
+}
+
+.ticket-admin-panel-ticket-container {
+    width: 35vw;
+    height: 100%;
+    display: inline-block;
+    border: 1px solid red;
+}
+
+.ticket-admin-panel-list-table-div {
+    width: 100%;
+    /* height: 90%; */
+    /* display: flex; */
+}
+
+.ticket-table,
+.ticket-table thead,
+.ticket-table tbody,
+.ticket-table tr,
+.ticket-table td,
+.ticket-table th {
+  background-color: #4B5C67CC !important;
+  color: white; /* opcional: para que el texto contraste */
+}
+
+.ticket-table {
+    margin: 0;
+    padding: 0;
+}
+
+.ticket-table td {
+    font-size: 10pt !important;
+}
+
+.ticket-admin-panel-list-nav-pagination-div {
+    width: 100%;
+    padding: 3px;
+
+}
+
+.page-item {
+    background-color: #4B5C67CC;
+}
+
+.page-link {
+    background-color: #4B5C67CC;
+    color: white;
+    cursor: pointer;
+
+}
+
+.page-link-current {
+    background-color: white;
+    color: #4B5C67CC;;
+}

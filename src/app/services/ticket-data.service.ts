@@ -4,30 +4,52 @@ import { TicketMutations } from "@app/graphql/mutations/ticket.mutations";
 import { Ticket } from "@app/interfaces/ticket.interface";
 import { KeycloakService } from "keycloak-angular";
 import { MarkerData } from "@app/models/markerData";
-import { BehaviorSubject, Observable } from "rxjs";
-import { TicketDataService } from "@app/interfaces/ticket-data-service";
+import { BehaviorSubject, delay, Observable } from "rxjs";
 import { ErrorResponse } from "@app/interfaces/error_response.interface";
 import { TicketQueries } from "@app/graphql/queries/ticket.queries";
 import { TicketServiceInterface } from "@app/interfaces/ticket.service.interface";
 import { User } from "@app/interfaces/user.interface";
 import { UserQueries } from "@app/graphql/queries/user.queries";
-import { TicketResult } from "@app/graphql/types/ticket.types";
+import { TicketFilterInput, TicketResult } from "@app/graphql/types/ticket.types";
 import { UserResponse } from "@app/graphql/types/user.types";
 import { StatusHistory } from "@app/interfaces/status_history.interface";
 import { environment } from "src/environments/environment";
+import { sleep } from "@app/utils/utils";
 
 
 @Injectable({ providedIn: "root" })
 export class TicketService implements TicketServiceInterface {
-  private markersDataSubject = new BehaviorSubject<MarkerData[]>([]);
+  private markersDataSubject = new BehaviorSubject<MarkerData[]>([]); // Markers info to draw markers
   public markersData$ = this.markersDataSubject.asObservable();
 
-  private ticketDataSubject = new BehaviorSubject<Ticket | null>(null);
+  private ticketDataSubject = new BehaviorSubject<Ticket | null>(null); // Ticket data to display when a marker is clicked
   public ticketData$ = this.ticketDataSubject.asObservable();
+
+  private ticketListSubject = new BehaviorSubject<Ticket[]>([]); // Markers data to display as a list
+  public ticketList$ = this.ticketListSubject.asObservable();
+
+  private ticketCounterSubject = new BehaviorSubject<number>(0);
+  public ticketCounter$ = this.ticketCounterSubject.asObservable();
 
   private endpoint = environment.backendForFrontendUrl; // adaptá según tu backend
 
   constructor(private readonly keycloak: KeycloakService) {}
+  
+  
+
+  private async generateGqlClient(): Promise<GraphQLClient> {
+
+    const token = await this.keycloak.getToken();
+    if (!token) throw new Error("No se pudo obtener el token.");
+
+    const client = new GraphQLClient(this.endpoint, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return client;
+  }
 
   async AddTicket(
     description: string,
@@ -36,13 +58,8 @@ export class TicketService implements TicketServiceInterface {
     latitud: number,
     ticketImgUrl: string,
   ): Promise<Ticket | ErrorResponse> {
-    const token = await this.keycloak.getToken();
 
-    const client = new GraphQLClient(this.endpoint, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const client = await this.generateGqlClient();
 
     const variables = {
       input: {
@@ -72,14 +89,8 @@ export class TicketService implements TicketServiceInterface {
   }
 
   async UpdateMarkersData(): Promise<void> {
-    const token = await this.keycloak.getToken();
-    if (!token) throw new Error("No se pudo obtener el token.");
 
-    const client = new GraphQLClient(this.endpoint, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const client = await this.generateGqlClient();
 
     const response = await client.request<{ findTickets: Ticket[] }>(
       TicketQueries.FindTickets,
@@ -99,14 +110,8 @@ export class TicketService implements TicketServiceInterface {
   }
 
   async UpdateTicketData(id: string): Promise<void> {
-    const token = await this.keycloak.getToken();
-    if (!token) throw new Error("No se pudo obtener el token.");
-
-    const client = new GraphQLClient(this.endpoint, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    
+    const client = await this.generateGqlClient();
 
     const responseTicket = await client.request<{ ticket: Ticket }>(TicketQueries.Ticket, {
       id: id,
@@ -143,4 +148,48 @@ export class TicketService implements TicketServiceInterface {
 
     this.ticketDataSubject.next(ticket);
   }
+
+
+  async UpdateTicketList(filter?: TicketFilterInput): Promise<void> {
+
+    await sleep(1000); // DEBUG
+
+    const client = await this.generateGqlClient();
+
+    const variables = {
+      filter: filter || {}
+    }
+
+    const response = await client.request<{ findTickets: Ticket[] }>(
+      TicketQueries.TicketListToShow,
+      variables
+    );
+
+    console.log('DEBUG Update Tickets List: ');
+    console.log(response.findTickets);
+
+    this.ticketListSubject.next(response.findTickets);
+
+  }
+
+  async UpdateTicketCounter(filter?: TicketFilterInput): Promise<void> {
+    await sleep(1000); // DEBUG
+
+    const client = await this.generateGqlClient();
+
+    const variables = {
+      filter: filter || {}
+    }
+
+    const response = await client.request<{ countTickets: number }>(
+      TicketQueries.CountTickets,
+      variables
+    );
+
+    console.log('DEBUG Update Tickets Counter: ');
+    console.log(response.countTickets);
+
+    this.ticketCounterSubject.next(response.countTickets);
+  }
+
 }

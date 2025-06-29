@@ -40,3 +40,19 @@
 .nav-button {
     cursor: pointer;
 }
+
+.nav-btn-img {
+  max-width: 47px;
+  max-height: auto;
+}
+
+
+@media screen and (min-width: 768px) {
+  
+  #nav-bar {
+    
+    width: 40%;
+    height: 7vh;
+  }
+
+}

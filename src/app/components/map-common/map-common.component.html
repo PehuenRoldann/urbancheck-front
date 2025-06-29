@@ -1,4 +1,4 @@
-<!-- <app-reclamo-modal></app-reclamo-modal> -->
+
 <div id="map-container">
 
     <div class="spinner-container" [ngStyle]="{'display': (mapStatus === 0) ? 'flex' : 'none'}">
@@ -15,14 +15,20 @@
 
 
     <nav id="nav-bar">
-        <span class="nav-button" (click)="openModal('profileModal')"
-            ><img src="assets/images/Vectorperson.svg" alt=""
+        <span class="nav-button" (click)="openModal(modalIds[3])"
+            ><img class="nav-btn-img" src="assets/images/Vectorperson.svg" alt=""
         /></span>
         <span class="nav-button"
-            ><img src="assets/images/megaphone.svg" alt=""
+            ><img class="nav-btn-img" src="assets/images/megaphone.svg" alt=""
         /></span>
         <span class="nav-button"
-            ><img src="assets/images/notices-board.svg" alt=""
+            ><img class="nav-btn-img" src="assets/images/notices-board.svg" alt=""
+        /></span>
+        <span 
+            *ngIf="userData?.role!.id !== 2"
+            class="nav-button"
+            (click)="goToAdminPanel()"
+            ><img class="nav-btn-img" src="assets/images/task-list-svgrepo-com.svg" alt=""
         /></span>
     </nav>
 </div>
@@ -60,7 +66,7 @@
                     type="button"
                     class="btn btn-primary"
                     data-bs-dismiss="modal"
-                    (click)="openModal('ticketCrationModal')"
+                    (click)="openModal(modalIds[1])"
                 >
                     Confirmar!
                 </button>
@@ -70,8 +76,12 @@
 </div>
 
 
-<app-ticket-creation-modal [modalId]="'ticketCrationModal'" (cancelTicket)="removeLastMark($event)" (ticketCreated)="onTicketCreated($event)"/>
+<app-ticket-creation-modal [modalId]="modalIds[1]" (cancelTicket)="removeLastMark($event)" (ticketCreated)="onTicketCreated($event)"/>
 
-<app-ticket-view-modal [modalId]="'ticketViewModal'"/>
+<app-ticket-view-modal [modalId]="modalIds[2]"/>
 
-<app-profile-modal [modalId]="'profileModal'" />
+<app-profile-modal [modalId]="modalIds[3]" />
+
+<!-- <app-ticket-administartion-panel [modalId]="modalIds[0]"/> -->
+
+

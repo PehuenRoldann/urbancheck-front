@@ -1,7 +1,10 @@
+import { Dependency } from "./dependency.interface";
 import { Issue } from "./issue.interface";
 import { PriorityHistory } from "./priority_history.entity";
 import { StatusHistory } from "./status_history.interface";
 import { Subscription } from "./subscription.interface";
+import { TicketStatus } from "./ticket_status.interface";
+import { User } from "./user.interface";
 
 export interface Ticket {
   id: string;
@@ -33,6 +36,12 @@ export interface Ticket {
   createdBy?: string;
 
   state?: string;
+
+  current_status?: TicketStatus;
+
+  author?: User;
+
+  dependency?: Dependency;
 }
 
 

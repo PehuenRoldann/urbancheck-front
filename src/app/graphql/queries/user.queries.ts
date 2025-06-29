@@ -35,6 +35,11 @@ export class UserQueries {
           postal_code
           street
           street_number
+
+          role {
+            id
+            description
+          }
         }
 
         ... on ErrorResponse {

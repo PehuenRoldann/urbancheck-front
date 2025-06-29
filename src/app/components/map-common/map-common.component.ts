@@ -1,13 +1,21 @@
 import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { TicketServiceInterface, TICKET_SERVICE_INTERFACE_TOKEN } from "src/app/interfaces/ticket.service.interface";
 import { MapServiceInterface, MAP_SERVICE_INTERFACE_TOKEN } from "src/app/interfaces/map.service.interface";
-// import { MapboxService } from "src/app/services/mapbox.service";
-// import { TicketDataJsonService } from "src/app/services/ticket-data-json.service";
+
 import { TicketViewModalComponent } from "../ticket-view-modal/ticket-view-modal.component";
 import { MarkerData } from "src/app/models/markerData";
-/* import mapboxgl from 'mapbox-gl'; */
+import { User } from "@app/interfaces/user.interface";
+import { UserService } from "@app/services/user.service";
+import { Router } from "@angular/router";
 
 declare var bootstrap: any;
+
+export const enum ModalIds {
+  adminPanel,
+  ticketCreationModal,
+  ticketViewModal,
+  profileModal
+}
 
 @Component({
   selector: 'app-map-common',
@@ -15,19 +23,38 @@ declare var bootstrap: any;
   styleUrls: ['./map-common.component.css'],
 })
 export class MapCommonComponent implements OnInit {
+
   public currentCoorsd: { lng: number; lat: number } = { lng: 0, lat: 0 };
   public mapStatus!: number;
   @ViewChild(TicketViewModalComponent)
   ticketViewModal!: TicketViewModalComponent;
   public markersData!: MarkerData[];
+  public userData: User | null = null;
+
+  public modalIds: Record<ModalIds, string> = {
+    [ModalIds.adminPanel]: 'adminPanel',
+    [ModalIds.ticketCreationModal]: 'ticketCrationModal',
+    [ModalIds.ticketViewModal]: 'ticketViewModal',
+    [ModalIds.profileModal]: 'profileModal'
+  }
+
+
 
   constructor(
     @Inject(TICKET_SERVICE_INTERFACE_TOKEN) private ticketDataService: TicketServiceInterface,
-    @Inject(MAP_SERVICE_INTERFACE_TOKEN) private geoService: MapServiceInterface
+    @Inject(MAP_SERVICE_INTERFACE_TOKEN) private geoService: MapServiceInterface,
+    private userService: UserService,
+    private router: Router,
   ) {}
 
   async ngOnInit(): Promise<void> {
+
+    this.userData = await this.userService.getUserData();
+    this.userData.role!.id = Number(this.userData.role!.id);
     
+    console.log("DEBUG ROLE USER");
+    console.log(this.userData.role);
+
     this.geoService.initializeMap('map');
 
     this.geoService.lastCoords$.subscribe((coords) => {
@@ -94,5 +121,9 @@ export class MapCommonComponent implements OnInit {
   // Método para manejar el evento emitido por el modal
   onTicketCreated(result: any): void {
     this.ticketDataService.UpdateMarkersData();
+  }
+
+  goToAdminPanel() {
+    this.router.navigate(['/admin'])
   }
 }

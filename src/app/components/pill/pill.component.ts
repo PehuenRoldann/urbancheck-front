@@ -23,4 +23,16 @@ export class PillComponent {
     [TicketStates.Cancelado, '#AF1740']
   ]);
 
+  COLOR_FONT_MAP = new Map<string, string>([
+    [TicketStates.Pendiente, '#030303'],
+    [TicketStates.EnRevision, '#EFEFF0'],
+    [TicketStates.Rechazado, '#EFEFF0'],
+    [TicketStates.Demorado, '#EFEFF0'],
+    [TicketStates.Programada, '#EFEFF0'],
+    [TicketStates.Reprogramado, '#EFEFF0'],
+    [TicketStates.Resuleto, '#EFEFF0'],
+    [TicketStates.Finalizado, '#EFEFF0'],
+    [TicketStates.Cancelado, '#EFEFF0']
+  ])
+
 }

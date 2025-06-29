@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { ErrorResponse } from "@app/interfaces/error_response.interface";
 import { PhotoManagerService } from "@app/services/photo-manager.service";
-import { UserServiceService } from "@app/services/user-service.service";
+import { UserService } from "@app/services/user.service";
 import { delay } from "rxjs";
 import {
   MAP_SERVICE_INTERFACE_TOKEN,
@@ -52,7 +52,7 @@ export class TicketCreationModalComponent implements OnInit {
     @Inject(MAP_SERVICE_INTERFACE_TOKEN)
     private mapService: MapServiceInterface,
     private photoManager: PhotoManagerService,
-    private userService: UserServiceService,
+    private userService: UserService,
   ) {}
 
   ngOnInit(): void {

@@ -35,13 +35,16 @@ export class TicketQueries {
           longitude
           timestamp
           image_url
+          its
           issue {
             id
             description
+            dependency_id
           }
           status_history {
             id
             author_id
+            status_id
           }
         }
       }
@@ -71,6 +74,53 @@ export class TicketQueries {
         }
       }
     }
+  }
+  `;
+
+
+  static readonly TicketStatus = gql`
+  query TicketStatus {
+    ticketStatus {
+      ... on TicketStatus {
+        id
+        description
+      }
+      ... on ErrorResponse {
+        message
+        code
+        path
+      }
+    }
+  }
+  `;
+
+  static readonly TicketListToShow = gql`
+  query TicketListToShow($filter: TicketFilterInput) {
+    findTickets(filter: $filter) {
+      ... on Ticket {
+        id
+        its
+        author {
+          id
+          first_name
+          last_name
+        }
+        current_status {
+          id
+          description
+        }
+        dependency {
+          id
+          name
+        }
+      }
+    }
+  }
+  `;
+
+  static readonly CountTickets = gql`
+  query CountTickets ($filter: TicketFilterInput) {
+    countTickets(filter: $filter)
   }
   `;
 }

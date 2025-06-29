@@ -1,13 +1,34 @@
 import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { environment } from "src/environments/environment";
 import { KeycloakService } from "keycloak-angular";
 import { GraphQLClient } from "graphql-request";
+import { UserMutations } from "@app/graphql/mutations/users.mutations";
 import { User } from "@app/interfaces/user.interface";
 import { ErrorResponse } from "@app/interfaces/error_response.interface";
-import { UserMutations } from "@app/graphql/mutations/users.mutations";
+import { UserQueries } from "@app/graphql/queries/user.queries";
 
-@Injectable({ providedIn: "root" })
+// Define el modelo de datos para UserDTO
+export interface UserDTO {
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
+  direccion: string;
+  dni: string;
+  uuid: string;
+  fechaNacimiento: string; // Formato "yyyy-mm-dd"
+}
+
+@Injectable({
+  providedIn: "root",
+})
 export class UserService {
-  private endpoint = "http://localhost:3000/graphql/"; // tu URL real
+
+  private endpoint = environment.backendForFrontendUrl;
+
+  private currentUser: User | null = null;
 
   constructor(private keycloak: KeycloakService) {}
 
@@ -21,7 +42,7 @@ export class UserService {
       },
     });
 
-    const data = await client.request<{ lazySyncUser: User | ErrorResponse }>(
+    const data = await client.request<{ UserResponse: User | ErrorResponse }>(
       UserMutations.LAZYSYNCUSER,
       {
         input: {
@@ -30,6 +51,29 @@ export class UserService {
       },
     );
 
-    return data.lazySyncUser;
+    return data.UserResponse;
+  }
+
+  async getUserData(): Promise<User> {
+
+    if (this.currentUser) {
+      return this.currentUser;
+    }
+
+    const token = await this.keycloak.getToken();
+    const userProfile = await this.keycloak.loadUserProfile();
+
+    const client = new GraphQLClient(this.endpoint, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await client.request<{ findOneByToken: User | ErrorResponse }>(
+      UserQueries.FindOneByToken,
+    );
+
+    this.currentUser = data.findOneByToken as unknown as User;
+    return this.currentUser;
   }
 }

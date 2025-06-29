@@ -24,6 +24,8 @@ import { ProfileModalComponent } from "./components/profile-modal/profile-modal.
 import { TicketService } from "./services/ticket-data.service";
 import { PhotoUploadComponent } from './components/photo-upload/photo-upload.component';
 import { NgxFileDropModule } from "ngx-file-drop";
+import { TicketAdministartionPanelComponent } from './components/ticket-administartion-panel/ticket-administartion-panel.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { NgxFileDropModule } from "ngx-file-drop";
     PillComponent,
     ProfileModalComponent,
     PhotoUploadComponent,
+    TicketAdministartionPanelComponent,
+    SpinnerComponent,
     //    ReclamoModalComponent,
   ],
   imports: [
