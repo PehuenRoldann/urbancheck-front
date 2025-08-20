@@ -28,8 +28,9 @@ export class AppComponent implements OnInit {
 
     console.log("DEBUG TOKEN:"); // DEBUG borrar antes de prod
     console.log(token);
-
+    debugger;
     if (this.isLogueado) {
+      console.log("Usuario logueado"); // DEBUG borrar antes de prod
       const user = await this.userService.syncUserToBackend();
 
     }

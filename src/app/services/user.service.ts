@@ -33,26 +33,40 @@ export class UserService {
   constructor(private keycloak: KeycloakService) {}
 
   async syncUserToBackend(): Promise<User | ErrorResponse> {
+
     const token = await this.keycloak.getToken();
-    const userProfile = await this.keycloak.loadUserProfile();
+    console.log(token);
 
-    const client = new GraphQLClient(this.endpoint, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+     //  const userProfile = await this.keycloak.loadUserProfile();
 
-    const data = await client.request<{ UserResponse: User | ErrorResponse }>(
-      UserMutations.LAZYSYNCUSER,
-      {
-        input: {
-          auth_provider_id: userProfile.id,
+      // console.log('User Profile:'); // DEBUG borrar antes de prod
+      // console.log(userProfile);
+
+      const client = new GraphQLClient(this.endpoint, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      },
-    );
+      });
 
-    return data.UserResponse;
-  }
+      const data = await client.request<{ UserResponse: User | ErrorResponse }>(
+        UserMutations.LAZYSYNCUSER,
+        {
+          input: {
+            auth_provider_id: '1',
+          },
+        }
+      );
+
+      console.log("User Response:", data.UserResponse); // DEBUG borrar antes de prod
+      return data.UserResponse;
+
+    }
+     catch (error) {
+      console.error("Error al sincronizar el usuario:", error);
+      return { message: "Error al sincronizar el usuario" } as ErrorResponse;
+     }
+    }
 
   async getUserData(): Promise<User> {
 
@@ -61,7 +75,7 @@ export class UserService {
     }
 
     const token = await this.keycloak.getToken();
-    const userProfile = await this.keycloak.loadUserProfile();
+
 
     const client = new GraphQLClient(this.endpoint, {
       headers: {
