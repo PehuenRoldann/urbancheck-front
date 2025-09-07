@@ -13,12 +13,20 @@ import { UserService } from '@app/services/user.service';
   styleUrls: ['./ticket-administartion-panel.component.css']
 })
 export class TicketAdministartionPanelComponent implements OnInit {
+minimized_ticket_id(arg0: string) {
+  return arg0.split('-')[0];
+}
+selectedTicketId: any;
 
-  
+selectTicket(arg0: string) {
+    this.selectedTicketId = arg0;
+}
+
+
   public ticketList: Ticket[] = [];
   private statusList: TicketStatus[] = [];
   public showSpinner: boolean = true;
-  
+
   public maxPagesCount: number = -1;
   public currentPageNumber: number = 1;
   public tableRowsLimit: number = 14;
@@ -41,7 +49,7 @@ export class TicketAdministartionPanelComponent implements OnInit {
     this.ticketDataService.ticketCounter$.subscribe((max_tickets) => {
       this.maxPagesCount = Math.ceil(max_tickets / this.tableRowsLimit);
     })
-    
+
     this.ticketDataService.ticketList$.subscribe((ticketList) => {
       this.ticketList = ticketList;
 
@@ -49,7 +57,7 @@ export class TicketAdministartionPanelComponent implements OnInit {
     });
 
     this.showSpinner = true;
-    
+
     this.ticketDataService.UpdateTicketList(this.filter);
     this.ticketDataService.UpdateTicketCounter(this.filter);
   }
@@ -61,9 +69,9 @@ export class TicketAdministartionPanelComponent implements OnInit {
   formatDate(date: Date): string {
 
     const dateStr = date.toString();
-    
+
     return dateStr.split('T')[0];
-    
+
   }
 
   changePageTo(pageNumber: number) {
@@ -84,7 +92,7 @@ export class TicketAdministartionPanelComponent implements OnInit {
     if (this.currentPageNumber == 1 || this.currentPageNumber == 2) {
       const toReturn = [];
       for (let i = 0; i < 3; i++) {
-        
+
         if (i+1 <= this.maxPagesCount) toReturn.push(i+1);
       }
 
@@ -105,7 +113,7 @@ export class TicketAdministartionPanelComponent implements OnInit {
       this.currentPageNumber -1,
       this.currentPageNumber,
       this.currentPageNumber + 1
-    ] 
+    ]
 
 
   }

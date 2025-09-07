@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Ticket } from 'src/app/models/ticket';
+import { Ticket } from '@app/models/ticket';
 import { TicketStates } from 'src/app/models/ticketStates';
 
 @Component({
@@ -11,16 +11,20 @@ export class PillComponent {
 
   @Input({required: true}) ticketState!: string;
 
+  removeAccents(text: string): string {
+    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
   COLOR_MAP_HEX = new Map<string, string>([
     [TicketStates.Pendiente, '#FFE700'],
-    [TicketStates.EnRevision, '#FF9D3D'],
+    [TicketStates.Valido, '#FF9D3D'],
     [TicketStates.Rechazado, '#CC2B52'],
-    [TicketStates.Demorado, '#9B7EBD'],
     [TicketStates.Programada, '#9EDF9C'],
-    [TicketStates.Reprogramado, '#62825D'],
     [TicketStates.Resuleto, '#608BC1'],
     [TicketStates.Finalizado, '#CBDCEB'],
-    [TicketStates.Cancelado, '#AF1740']
+    [TicketStates.Cancelado, '#AF1740'],
+    [TicketStates.Derivado, '#D3D3D3'],
+
   ]);
 
   COLOR_FONT_MAP = new Map<string, string>([
@@ -32,7 +36,8 @@ export class PillComponent {
     [TicketStates.Reprogramado, '#EFEFF0'],
     [TicketStates.Resuleto, '#EFEFF0'],
     [TicketStates.Finalizado, '#EFEFF0'],
-    [TicketStates.Cancelado, '#EFEFF0']
+    [TicketStates.Cancelado, '#EFEFF0'],
+    [TicketStates.Derivado, '#030303'],
   ])
 
 }

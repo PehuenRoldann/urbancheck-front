@@ -14,6 +14,7 @@ export class Ticket {
   private _modifiedBy: string = '';
   private _state: TicketStates = TicketStates.Pendiente;
   private _imgUrl: string = '';
+  private _issueId: number = -1;
 
   constructor(data?: Partial<Ticket>) {
     if (data) {
@@ -21,8 +22,8 @@ export class Ticket {
       this.description = data.description ?? this._description;
       this.descriptionLength =
         data.descriptionLength ?? this._descriptionLength;
-      this.lat = data.lat ?? this._lat;
-      this.lng = data.lng ?? this._lng;
+      this.latitude = data.latitude ?? this._lat;
+      this.longitude = data.longitude ?? this._lng;
       this.finalCost = data.finalCost ?? this._finalCost;
       this.dateTime = data.dateTime ?? this._dateTime;
       this.dependency = data.dependency ?? this._dependency;
@@ -30,6 +31,7 @@ export class Ticket {
       this.modifiedBy = data.modifiedBy ?? this._modifiedBy;
       this.state = data.state ?? this._state;
       this.imgUrl = data.imgUrl ?? this._imgUrl;
+      this.issueId = data.issueId ?? -1;
     }
   }
 
@@ -55,17 +57,17 @@ export class Ticket {
     this._descriptionLength = value;
   }
 
-  get lat() {
+  get latitude() {
     return this._lat;
   }
-  set lat(value: number) {
+  set latitude(value: number) {
     this._lat = value;
   }
 
-  get lng() {
+  get longitude() {
     return this._lng;
   }
-  set lng(value: number) {
+  set longitude(value: number) {
     this._lng = value;
   }
 
@@ -122,20 +124,27 @@ export class Ticket {
     return new Date(this.dateTime)
   }
 
+  get issueId() {
+    return this._issueId;
+  }
+  set issueId(value: number) {
+    this._issueId = value;
+  }
 
-  static fromJson(json: any): Ticket 
-  { 
-    const dependency = MunicipalIssues[json.dependencia.nombre.replace(/\s/g, '') as keyof typeof MunicipalIssues]; 
-    const ticket = new Ticket({ 
+
+  static fromJson(json: any): Ticket
+  {
+    const dependency = MunicipalIssues[json.dependencia.nombre.replace(/\s/g, '') as keyof typeof MunicipalIssues];
+    const ticket = new Ticket({
       id: json.id.toString(),
       description: json.descripcion,
-      lat: json.latitud,
-      lng: json.longitudes,
+      latitude: json.latitud,
+      longitude: json.longitudes,
       finalCost: json.costoFinal,
       dateTime: new Date(json.fechaHora).getTime(),
       dependency: dependency,
       createdBy: json.creadoPor.email,
-      state: TicketStates[json.estado.replace(/\s/g, '') as keyof typeof TicketStates] }); // Si es necesario, puedes mapear otras propiedades o realizar conversiones adicionales aquí 
+      state: TicketStates[json.estado.replace(/\s/g, '') as keyof typeof TicketStates] }); // Si es necesario, puedes mapear otras propiedades o realizar conversiones adicionales aquí
       return ticket;
   }
 }

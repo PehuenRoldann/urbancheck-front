@@ -21,7 +21,7 @@
 }
 
 .ticket-admin-panel-dashboard-container {
-    
+
     display: flex;
     width: 100%;
     height: 95vh;
@@ -57,7 +57,7 @@
 }
 
 .ticket-admin-panel-nav-btn {
-    
+
     padding: 8px 12px 8px 12px;
     border-radius: 5px;
     align-items: center;
@@ -73,7 +73,7 @@
 }
 
 .ticket-admin-panel-nav-btn img{
-    
+
     width: auto;
     height: 4vh;
 }
@@ -115,7 +115,7 @@
 }
 
 .ticket-table td {
-    font-size: 10pt !important;
+    font-size: 11pt !important;
 }
 
 .ticket-admin-panel-list-nav-pagination-div {
@@ -138,4 +138,10 @@
 .page-link-current {
     background-color: white;
     color: #4B5C67CC;;
+}
+
+
+.admin-panel-row:hover {
+    cursor: pointer;
+    border-bottom: 1px solid white;
 }

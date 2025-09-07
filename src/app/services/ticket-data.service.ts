@@ -16,6 +16,17 @@ import { StatusHistory } from "@app/interfaces/status_history.interface";
 import { environment } from "src/environments/environment";
 import { sleep } from "@app/utils/utils";
 
+interface CreateTicketInput {
+  description: string;
+	latitude: number;
+  longitude: number;
+	statusId: number;
+	priorityId: number;
+	issueId: number;
+	imageUrl: string | null;
+}
+
+
 
 @Injectable({ providedIn: "root" })
 export class TicketService implements TicketServiceInterface {
@@ -34,8 +45,8 @@ export class TicketService implements TicketServiceInterface {
   private endpoint = environment.backendForFrontendUrl; // adaptá según tu backend
 
   constructor(private readonly keycloak: KeycloakService) {}
-  
-  
+
+
 
   private async generateGqlClient(): Promise<GraphQLClient> {
 
@@ -53,7 +64,7 @@ export class TicketService implements TicketServiceInterface {
 
   async AddTicket(
     description: string,
-    dependencyId: number,
+    issueId: number,
     longitud: number,
     latitud: number,
     ticketImgUrl: string,
@@ -61,20 +72,28 @@ export class TicketService implements TicketServiceInterface {
 
     const client = await this.generateGqlClient();
 
-    const variables = {
-      input: {
-        description,
-        issueId: dependencyId,
-        longitude: longitud,
-        latitude: latitud,
-        imageUrl: ticketImgUrl ?? null,
-      },
+    const input: CreateTicketInput = {
+      description: description,
+      latitude: latitud,
+      longitude: longitud,
+      statusId: 1, // Estado inicial "Abierto"
+      priorityId: 1, // Prioridad inicial "Baja"
+      issueId: issueId, // Asumimos que issueId es un número válido
+      imageUrl: ticketImgUrl ?? null,
     };
+
+    const variables = { input: input };
+    console.log("DEBUG - Variables para CreateTicket:", variables);
+    debugger;
+
 
     const response = await client.request<TicketResult>(
       TicketMutations.CREATE_TICKET,
       variables,
     );
+
+    console.log("DEBUG - Response de CreateTicket:", response);
+    debugger;
 
     const result = response.createTicket;
 
@@ -110,13 +129,13 @@ export class TicketService implements TicketServiceInterface {
   }
 
   async UpdateTicketData(id: string): Promise<void> {
-    
+
     const client = await this.generateGqlClient();
 
     const responseTicket = await client.request<{ ticket: Ticket }>(TicketQueries.Ticket, {
       id: id,
     });
-    
+
     const ticket = responseTicket.ticket;
 
     const responseUser = await client.request<{ticketAuthor: UserResponse}>(UserQueries.TicketAuthor,
@@ -131,7 +150,7 @@ export class TicketService implements TicketServiceInterface {
       const user = authorResult as unknown as User;
 
       ticket.createdBy = user.first_name + ' ' + user.last_name;
-      
+
     } else {
       const error = authorResult as unknown as  ErrorResponse;
       console.error("Es un ErrorResponse:", error.message);

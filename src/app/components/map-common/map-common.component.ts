@@ -92,7 +92,7 @@ export class MapCommonComponent implements OnInit {
     const modalElement = document.getElementById(modalID);
 
     if (modalElement) {
-      const modal = new bootstrap.Modal(modalElement); // Usa el servicio de Bootstrap para abrir el modal
+      const modal = new bootstrap.Modal(modalElement); // Usa el servicio de Bootstrap para abrir el modal  
       modal.show();
     }
   }

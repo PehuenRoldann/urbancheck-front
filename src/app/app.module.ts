@@ -26,6 +26,7 @@ import { PhotoUploadComponent } from './components/photo-upload/photo-upload.com
 import { NgxFileDropModule } from "ngx-file-drop";
 import { TicketAdministartionPanelComponent } from './components/ticket-administartion-panel/ticket-administartion-panel.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { TicketVisualizerComponentComponent } from './components/ticket-visualizer-component/ticket-visualizer-component.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
     PhotoUploadComponent,
     TicketAdministartionPanelComponent,
     SpinnerComponent,
+    TicketVisualizerComponentComponent,
     //    ReclamoModalComponent,
   ],
   imports: [

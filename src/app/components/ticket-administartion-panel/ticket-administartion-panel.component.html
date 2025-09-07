@@ -3,11 +3,11 @@
         <div class="ticket-admin-panel-nav-container">
             <nav class="ticket-admin-panel-nav">
                 <span class="ticket-admin-panel-nav-btn" (click)="goToMap()">
-                    <img  
+                    <img
                         src="/assets/images/go-back-svgrepo-com.svg"
                         alt="volver atras"
                     >
-                    <img 
+                    <img
                         src="/assets/images/map-location-pin-svgrepo-com.svg"
                         alt="mapa"
                     >
@@ -38,8 +38,8 @@
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  <tr *ngFor="let ticket of ticketList; let i = index">
-                                    <td>{{i}}</td>
+                                  <tr *ngFor="let ticket of ticketList; let i = index" clickable (click)="selectTicket(ticket.id!)" class="admin-panel-row" [ngClass]="{'ticket-table-row-selected': ticket.id === selectedTicketId}">
+                                    <td>#{{minimized_ticket_id(ticket.id)}}...</td>
                                     <td><app-pill [ticketState]="ticket.current_status?.description!"/></td>
                                     <td> {{ ticket.author?.first_name + ' ' + ticket.author?.last_name }} </td>
                                     <td>{{ formatDate(ticket.its!) }}</td>
@@ -56,8 +56,8 @@
                                   class="page-item"
                                   style="margin-right: 10px;"
                                   >
-                                    <a 
-                                    class="page-link" 
+                                    <a
+                                    class="page-link"
                                     (click)="changePageTo(currentPageNumber-1)"
                                     >
                                         Anterior
@@ -93,13 +93,13 @@
                                     <span style="width: 10px;"></span>
                                   </span>
 
-                                  <li 
+                                  <li
                                   *ngIf="!(currentPageNumber === maxPagesCount)"
-                                  class="page-item" 
+                                  class="page-item"
                                   style="margin-left: 10px;"
                                   >
-                                    <a 
-                                    class="page-link" 
+                                    <a
+                                    class="page-link"
                                     (click)="changePageTo(currentPageNumber+1)"
                                     >
                                         Siguiente
@@ -109,10 +109,14 @@
                               </nav>
                         </div>
                     </div>
-                    <div class="ticket-admin-panel-ticket-container"></div>
+                    <div class="ticket-admin-panel-ticket-container">
+                      <app-ticket-visualizer-component
+                        [ticketId]="selectedTicketId"
+                      ></app-ticket-visualizer-component>
+                    </div>
 
                 </div>
-                
+
             </ng-template>
         </div>
     </div>

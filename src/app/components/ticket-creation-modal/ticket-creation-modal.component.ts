@@ -7,6 +7,8 @@ import {
   OnInit,
 } from "@angular/core";
 import { ErrorResponse } from "@app/interfaces/error_response.interface";
+import { Issue } from "@app/interfaces/issue.interface";
+import { IssuesService } from "@app/services/issues.service";
 import { PhotoManagerService } from "@app/services/photo-manager.service";
 import { UserService } from "@app/services/user.service";
 import { delay } from "rxjs";
@@ -24,25 +26,62 @@ import MunicipalIssues, {
 } from "src/app/models/municipalDependencie";
 import { Ticket } from "src/app/models/ticket";
 
+interface CreateTicketInputInterface {
+  description: string;
+  latitude: number | null;
+  longitude: number | null;
+  issueId: number | null;
+  imageUrl: string | null;
+  statusId: number | null;
+  priorityId: number | null;
+
+}
+
 @Component({
-  selector: "app-ticket-creation-modal",
-  templateUrl: "./ticket-creation-modal.component.html",
-  styleUrls: ["./ticket-creation-modal.component.css"],
+  selector: 'app-ticket-creation-modal',
+  templateUrl: './ticket-creation-modal.component.html',
+  styleUrls: ['./ticket-creation-modal.component.css'],
 })
 export class TicketCreationModalComponent implements OnInit {
-
   @Input({ required: true }) modalId!: string;
   @Output() ticketCreated: EventEmitter<any> = new EventEmitter();
 
   public readonly maxLengthDesc: number = 250;
-  public processStep: number = 0;
-  public ticket = new Ticket();
-  public previewUrls: string[] = [];
-  public res = {
-    exito: "",
-    mensaje: "",
-    src: "",
+
+  public StepEnum = {
+    SelectProblem: 0,
+    DescribeIssue: 1,
+    AddPhoto: 2,
+    Confirm: 3,
+    Result: 4,
   };
+
+  public ticketCreationInput: CreateTicketInputInterface = {
+    description: '',
+    latitude: null,
+    longitude: null,
+    issueId: null,
+    imageUrl: null,
+    statusId: null, // Asignar un valor predeterminado
+    priorityId: null, // Asignar un valor predeterminado
+  };
+
+  public issuesList: Issue[] = [];
+
+  public processStep: number = this.StepEnum.SelectProblem;
+  // public ticket = new Ticket(); BORRAR
+
+  public res = {
+    exito: '',
+    mensaje: '',
+    src: '',
+  };
+
+  /// Photo upload
+  public previewUrls: string[] = [];
+  public files: File[] = []; // originales para subir
+  public maxFiles = 1; // opcional
+  public maxSizeMB = 200; // opcional
 
   public cancelCreation = new EventEmitter();
 
@@ -53,13 +92,21 @@ export class TicketCreationModalComponent implements OnInit {
     private mapService: MapServiceInterface,
     private photoManager: PhotoManagerService,
     private userService: UserService,
+    private issueService: IssuesService
   ) {}
 
   ngOnInit(): void {
     this.mapService.lastCoords$.subscribe((coords) => {
-      this.ticket.lat = coords.lat;
-      this.ticket.lng = coords.lng;
+      this.ticketCreationInput.latitude = coords.lat;
+      this.ticketCreationInput.longitude = coords.lng;
     });
+
+    this.issueService.issuesList$.subscribe((issues) => {
+      console.log('Issues list updated:', issues); // DEBUG borrar antes de prod
+      this.issuesList = issues;
+    });
+
+    this.issueService.updateIssuesData();
   }
 
   /**
@@ -75,54 +122,54 @@ export class TicketCreationModalComponent implements OnInit {
     return dependenciesArr;
   }
 
-
   async AddTicket(): Promise<void> {
-    const description = this.ticket.description;
-    const longitud = this.ticket.lng;
-    const latitud = this.ticket.lat;
-    const dependencyId = getDependencyId(this.ticket.dependency) || 1;
+    const description = this.ticketCreationInput.description;
+    const longitud = this.ticketCreationInput.longitude;
+    const latitud = this.ticketCreationInput.latitude;
+
 
     let ticketImgUrl: string = '';
 
     try {
-
       const userData = await this.userService.getUserData();
 
-      delay(2000); // DEBUG 
-      const photo = this.previewUrls.length > 0 ? await this.photoManager.fetchFileFromUrl(this.previewUrls[0]) : null;
-
+      delay(2000); // DEBUG
+      const photo =
+        this.previewUrls.length > 0
+          ? await this.photoManager.fetchFileFromUrl(this.previewUrls[0])
+          : null;
 
       if (photo) {
         ticketImgUrl = await this.photoManager.uploadImage(photo, userData.id);
       }
 
+
       delay(4000); // DEBUG
 
       const result = await this.ticketService.AddTicket(
         description,
-        dependencyId,
-        longitud,
-        latitud,
+        parseInt(this.ticketCreationInput.issueId?.toString() ?? '1'),
+        longitud!,
+        latitud!,
         ticketImgUrl
       );
 
-      if ("id" in result && "timestamp" in result) {
-
-        this.res.exito = "¡Éxito!";
-        this.res.mensaje = "Ticket creado exitosamente!";
-        this.res.src = "assets/images/like-svgrepo-com.svg";
+      if ('id' in result && 'timestamp' in result) {
+        this.res.exito = '¡Éxito!';
+        this.res.mensaje = 'Ticket creado exitosamente!';
+        this.res.src = 'assets/images/like-svgrepo-com.svg';
 
         this.ticketCreated.emit({
           success: true,
-          message: "Ticket creado exitosamente.",
+          message: 'Ticket creado exitosamente.',
         });
       } else {
         const error = result as ErrorResponse;
-        console.error("Error en la creación del ticket:", error.message);
+        console.error('Error en la creación del ticket:', error.message);
 
-        this.res.exito = "Error!";
+        this.res.exito = 'Error!';
         this.res.mensaje = error.message;
-        this.res.src = "assets/images/emoji-sad-svgrepo-com.svg";
+        this.res.src = 'assets/images/emoji-sad-svgrepo-com.svg';
 
         this.ticketCreated.emit({
           success: false,
@@ -130,48 +177,52 @@ export class TicketCreationModalComponent implements OnInit {
         });
       }
     } catch (error) {
-      console.error("Error inesperado al crear el ticket:", error);
+      console.error('Error inesperado al crear el ticket:', error);
 
-      this.res.exito = "Error!";
+      this.res.exito = 'Error!';
       this.res.mensaje =
-        "Ha ocurrido un error al intentar crear el ticket. Prueba otra vez...";
-      this.res.src = "assets/images/emoji-sad-svgrepo-com.svg";
+        'Ha ocurrido un error al intentar crear el ticket. Prueba otra vez...';
+      this.res.src = 'assets/images/emoji-sad-svgrepo-com.svg';
 
       this.ticketCreated.emit({
         success: false,
         message:
-          "Error al crear el ticket, pruebe otra vez o contacte con soporte.",
+          'Error al crear el ticket, pruebe otra vez o contacte con soporte.',
       });
     } finally {
-      ticketImgUrl = ''
+      ticketImgUrl = '';
       this.previewUrls = [];
     }
 
     this.nextStep();
   }
 
-  setDependency(selectedValue: string) {
-    const key = Object.keys(MunicipalIssues).find(
-      (k) =>
-        MunicipalIssues[k as keyof typeof MunicipalIssues] ===
-        selectedValue,
-    );
-
-    if (key) {
-      this.ticket.dependency = key as MunicipalIssues;
-    }
+  setIssue(selectedValue: Issue) {
+    this.ticketCreationInput.issueId = selectedValue.id;
   }
 
   nextStep() {
     this.processStep++;
-    this.ticket.dateTime = Date.now();
+    // this.ticket.dateTime = Date.now();
   }
   prevStep() {
     this.processStep--;
   }
 
   CancelTicket() {
-    this.ticket = new Ticket();
+    this.ticketCreationInput = {
+      description: '',
+      latitude: null,
+      longitude: null,
+      issueId: null,
+      imageUrl: null,
+      statusId: null, // Asignar un valor predeterminado
+      priorityId: null, // Asignar un valor predeterminado
+    };
+
+    this.clearAllFiles();
+
+    // this.ticket = new Ticket(); BORRAR
     this.processStep = 0;
     this.cancelCreation.emit();
   }
@@ -179,25 +230,26 @@ export class TicketCreationModalComponent implements OnInit {
   formatDateTime(timestamp: number): string {
     const date = new Date(timestamp);
 
-    const day = ("0" + date.getDate()).slice(-2); // Día con ceros a la izquierda
-    const month = ("0" + (date.getMonth() + 1)).slice(-2); // Mes con ceros a la izquierda
+    const day = ('0' + date.getDate()).slice(-2); // Día con ceros a la izquierda
+    const month = ('0' + (date.getMonth() + 1)).slice(-2); // Mes con ceros a la izquierda
     const year = date.getFullYear(); // Año
-    const hours = ("0" + date.getHours()).slice(-2); // Horas con ceros a la izquierda
-    const minutes = ("0" + date.getMinutes()).slice(-2); // Minutos con ceros a la izquierda
+    const hours = ('0' + date.getHours()).slice(-2); // Horas con ceros a la izquierda
+    const minutes = ('0' + date.getMinutes()).slice(-2); // Minutos con ceros a la izquierda
 
     return `${day}/${month}/${year} ${hours}:${minutes}`; // Retorna el formato deseado
   }
 
   getMunicipalDependencyLabel(key: string): string {
-    return (
-      MunicipalIssues[key as keyof typeof MunicipalIssues] || key
-    );
+    return MunicipalIssues[key as keyof typeof MunicipalIssues] || key;
   }
 
   CanContinue(): boolean {
-    if (this.processStep == 0 && this.ticket.dependency == null) {
+    if (this.processStep == 0 && this.ticketCreationInput.issueId == null) {
       return false;
-    } else if (this.processStep == 1 && this.ticket.description.length < 20) {
+    } else if (
+      this.processStep == 1 &&
+      this.ticketCreationInput.description.length < 20
+    ) {
       return false;
     } else {
       return true;
@@ -205,9 +257,57 @@ export class TicketCreationModalComponent implements OnInit {
   }
 
   onFileRemoved() {
-    this.previewUrls = []
+    this.previewUrls = [];
   }
   onFileAdded($event: string) {
-  this.previewUrls.push($event);
+    this.previewUrls.push($event);
+  }
+
+  get selectedIssue(): Issue | null {
+    if (this.ticketCreationInput.issueId == null) return null;
+
+    const foundIssue = this.issuesList.find(
+      (issue) => issue.id === this.ticketCreationInput.issueId
+    );
+    return foundIssue || null;
+  }
+
+  private async toDataURL(file: File): Promise<string> {
+    return new Promise((res) => {
+      const reader = new FileReader();
+      reader.onload = (e) => res(String((e?.target as any).result));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  removeAt(i: number) {
+    this.files.splice(i, 1);
+    this.previewUrls.splice(i, 1);
+  }
+
+  clearAllFiles() {
+    this.files = [];
+    this.previewUrls = [];
+  }
+
+  async onFilesSelected(newFiles: File[]) {
+    // Validaciones opcionales
+    const valid = newFiles.filter(
+      (f) =>
+        f.type.startsWith('image/') && f.size <= this.maxSizeMB * 1024 * 1024
+    );
+
+    // Limitar cantidad total
+    const room = Math.max(0, this.maxFiles - this.files.length);
+    const toAdd = valid.slice(0, room);
+
+    // Guardar originales
+    this.files.push(...toAdd);
+
+    // Generar previews (DataURL)
+    for (const f of toAdd) {
+      const dataUrl = await this.toDataURL(f);
+      this.previewUrls.push(dataUrl);
+    }
   }
 }

@@ -38,10 +38,6 @@ export class UserService {
     console.log(token);
 
     try {
-     //  const userProfile = await this.keycloak.loadUserProfile();
-
-      // console.log('User Profile:'); // DEBUG borrar antes de prod
-      // console.log(userProfile);
 
       const client = new GraphQLClient(this.endpoint, {
         headers: {

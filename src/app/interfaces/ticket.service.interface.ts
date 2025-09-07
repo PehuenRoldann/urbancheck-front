@@ -16,7 +16,7 @@ export interface TicketServiceInterface {
 
   AddTicket(
     description: string,
-    dependency: number,
+    issueId: number,
     longitud: number,
     latitud: number,
     ticketImgUrl: string,

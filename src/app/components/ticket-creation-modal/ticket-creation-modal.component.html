@@ -28,54 +28,60 @@
 
                 <div id="dependencySelectionDiv" *ngSwitchCase="0">
 
-                  <div class="form-check" *ngFor="let dependency of MunicipalDependenciesArr">
+                  <div class="form-check" *ngFor="let issue of issuesList">
                     <label class="form-check-label" for="flexRadioDefault1">
-                      {{dependency}}
+                      {{issue.description}}
                     </label>
 
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
-                      (click)="setDependency(dependency)">
+                      (click)="setIssue(issue)">
                   </div>
                 </div>
 
 
                 <div id="descriptionDiv" *ngSwitchCase="1">
                   <label for="descriptionInput">Descripción</label>
-                  <textarea 
-                      id="descriptionInput" 
-                      class="description-box" 
-                      [maxLength]="maxLengthDesc" 
-                      [(ngModel)]="ticket.description">
+                  <textarea
+                      id="descriptionInput"
+                      class="description-box"
+                      [maxLength]="maxLengthDesc"
+                      [(ngModel)]="ticketCreationInput .description">
                   </textarea>
                   <p class="warning-p-descripton"
-                  [ngStyle]="{visibility: ticket.description.length < 20 ? 'visible' : 'hidden'}"
+                  [ngStyle]="{visibility: ticketCreationInput.description.length < 20 ? 'visible' : 'hidden'}"
                   >* Al menos 20 caracteres...</p>
                   <div class="photo-uploader-component-container">
                     <app-photo-upload
-                    [previewUrls]="previewUrls"
-                    (fileAdded)="onFileAdded($event)"
-                    (fileRemoved)="onFileRemoved()"
+                      [accept]="'image/*'"
+                      [multiple]="true"
+                      [capture]="'environment'"
+                      (filesSelected)="onFilesSelected($event)"
+                      *ngIf="previewUrls.length < maxFiles"
                     ></app-photo-upload>
+
+                    <div *ngIf="previewUrls.length">
+                      <div class="flex-preview-image-container" *ngFor="let src of previewUrls; let i = index">
+                          <img [src]="src" alt="preview image" class="img-preview">
+                          <button class="photo-upoad-remove-btn" (click)="removeAt(i)">Eliminar</button>
+                      </div>
+                    </div>
                   </div>
-                  
+
                 </div>
 
                 <div id="ticketSumaryDiv" *ngSwitchCase="2">
 
                   <label>Problemática</label>
-                  <p>{{getMunicipalDependencyLabel(ticket.dependency)}}</p>
+                  <p>{{selectedIssue?.description}}</p>
 
                   <label for="descriptionInput">Descripción</label>
                   <div class="ticket-summary-description-div">
-                    {{ticket.description}}
+                    {{ticketCreationInput.description}}
                   </div>
-
-                  <label for="">Fecha y Hora</label>
-                  <p>{{formatDateTime(ticket.dateTime)}}</p>
 
                   <div class="ticket-summary-img-div" *ngIf="previewUrls.length > 0">
                     <label for="sumaryImagen">Foto</label>
-                    <img [src]="previewUrls[0]" alt="" class="ticket-summary-img">
+                    <img [src]="previewUrls[0]" alt="" class="img-preview">
                   </div>
 
                 </div>
