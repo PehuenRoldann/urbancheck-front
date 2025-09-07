@@ -24,6 +24,7 @@ export const enum ModalIds {
 })
 export class MapCommonComponent implements OnInit {
 
+
   public currentCoorsd: { lng: number; lat: number } = { lng: 0, lat: 0 };
   public mapStatus!: number;
   @ViewChild(TicketViewModalComponent)
@@ -37,7 +38,8 @@ export class MapCommonComponent implements OnInit {
     [ModalIds.ticketViewModal]: 'ticketViewModal',
     [ModalIds.profileModal]: 'profileModal'
   }
-
+  public showSidePanel: boolean = false;
+  public selectedTicketId: string | null = null;
 
 
   constructor(
@@ -51,7 +53,7 @@ export class MapCommonComponent implements OnInit {
 
     this.userData = await this.userService.getUserData();
     this.userData.role!.id = Number(this.userData.role!.id);
-    
+
     console.log("DEBUG ROLE USER");
     console.log(this.userData.role);
 
@@ -69,8 +71,16 @@ export class MapCommonComponent implements OnInit {
     });
 
     this.geoService.lastMarkerClickedSubject$.subscribe((markerData) => {
-      this.openModal('ticketViewModal');
-      this.ticketViewModal.GetTicketWithId(markerData.id);
+      // this.openModal('ticketViewModal');
+      // this.ticketViewModal.GetTicketWithId(markerData.id);
+
+      if (markerData && markerData.id) {
+        this.selectedTicketId = markerData.id;
+        this.showSidePanel = true;
+
+      }
+
+
     });
 
     this.ticketDataService.markersData$.subscribe((markerDataRes) => {
@@ -92,7 +102,7 @@ export class MapCommonComponent implements OnInit {
     const modalElement = document.getElementById(modalID);
 
     if (modalElement) {
-      const modal = new bootstrap.Modal(modalElement); // Usa el servicio de Bootstrap para abrir el modal  
+      const modal = new bootstrap.Modal(modalElement); // Usa el servicio de Bootstrap para abrir el modal
       modal.show();
     }
   }
@@ -125,5 +135,10 @@ export class MapCommonComponent implements OnInit {
 
   goToAdminPanel() {
     this.router.navigate(['/admin'])
+  }
+
+
+  onTicketUpdated($event: Event) {
+    console.log("No se puede actualizar el ticket.");
   }
 }

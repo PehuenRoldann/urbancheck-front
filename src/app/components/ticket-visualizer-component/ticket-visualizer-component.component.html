@@ -1,2 +1,82 @@
-<p>ticket-visualizer-component works!</p>
-<p>Selected id: {{ticketId}}</p>
+<div class="ticket-visualizer-component">
+
+
+  <div *ngIf="isLoading; else ticketDataTemplate" style="width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;">
+
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+
+  </div>
+
+
+<ng-template #ticketDataTemplate
+style="background-color: blue; width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;"
+>
+
+  <div
+  *ngIf="ticketData; else noDataTemplate"
+  class="ticket-data-container"
+  >
+
+      <div class="flex-row-centered-container">
+              <div class="grid-container">
+                <div class="grid-item header">Creado por</div>
+                <div class="grid-item header">Fecha</div>
+                <div class="grid-item header">Estado</div>
+                <div class="grid-item">{{ ticketData!.createdBy }}</div>
+                <div class="grid-item">{{ dateFromTicket }}</div>
+                <div class="grid-item" style="display: flex; align-items: center; justify-content: center;">
+                  <app-pill [ticketState]="
+                  ticketData === null || ticketData.state === null || ticketData === undefined || ticketData.state === undefined
+                  ? 'Sin estado'
+                  : ticketData.state === 'V_lido'
+                  ? 'Válido'
+                  : ticketData.state" />
+                </div>
+              </div>
+      </div>
+
+      <!-- Descripción -->
+      <div class="flex-col-centered-container" id="description_container">
+        <h6 class="title-section">Descripción</h6>
+        <textarea
+          name=""
+          id="description-text-area"
+          readonly
+          [value]="ticketData ? ticketData.description : ''"
+        ></textarea>
+      </div>
+
+      <!-- Imagen -->
+      <div class="flex-col-centered-container ticket-image-container">
+        <img
+          class="ticket-img"
+          [src]="
+            ticketData && ticketData.image_url
+              ? ticketData.image_url
+              : 'assets/images/Image_not_available.png'
+          "
+          alt="Ticket_image"
+        />
+      </div>
+
+      <!-- Dirección -->
+      <div class="flex-col-centered-container" id="address_container">
+        <h6>Dirección</h6>
+        <textarea name="" id="" readonly [value]="address"></textarea>
+      </div>
+
+
+  </div>
+
+
+
+  <ng-template #noDataTemplate>
+    <div class="flex-col-centered-container">
+      <h3>No se pudo cargar la información del ticket.</h3>
+    </div>
+  </ng-template>
+
+</ng-template>
+</div>

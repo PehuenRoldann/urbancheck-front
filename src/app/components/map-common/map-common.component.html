@@ -31,6 +31,28 @@
             ><img class="nav-btn-img" src="assets/images/task-list-svgrepo-com.svg" alt=""
         /></span>
     </nav>
+
+
+    <app-side-panel
+      mode="overlay"
+      position="right"
+      [(expanded)]="showSidePanel"
+      [background]="'#4B5C67CC'"
+      width="35vw"
+      (closed)="showSidePanel = false">
+      <!-- contenido del panel -->
+      <div style="display: flex; width: 100%; height: auto; justify-content: flex-start; align-items: center;">
+        <img src="assets/images/close_small_btn.svg" alt="close button" (click)="showSidePanel = false" style="cursor: pointer; width: 30px; height: 30px; margin: 10px;">
+      </div>
+      <app-ticket-visualizer-component
+        [ticketId]="selectedTicketId"
+        [userRoleId]="userData?.role!.id"
+        (closePanel)="showSidePanel = false"
+        (ticketUpdated)="onTicketUpdated($event)"
+      ></app-ticket-visualizer-component>
+    </app-side-panel>
+
+
 </div>
 
 <!-- Modal -->

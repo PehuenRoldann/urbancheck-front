@@ -27,6 +27,7 @@ import { NgxFileDropModule } from "ngx-file-drop";
 import { TicketAdministartionPanelComponent } from './components/ticket-administartion-panel/ticket-administartion-panel.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { TicketVisualizerComponentComponent } from './components/ticket-visualizer-component/ticket-visualizer-component.component';
+import { SidePanelComponent } from './components/side-panel/side-panel.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { TicketVisualizerComponentComponent } from './components/ticket-visualiz
     TicketAdministartionPanelComponent,
     SpinnerComponent,
     TicketVisualizerComponentComponent,
+    SidePanelComponent,
     //    ReclamoModalComponent,
   ],
   imports: [

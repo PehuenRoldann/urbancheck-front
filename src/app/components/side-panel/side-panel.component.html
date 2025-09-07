@@ -1,0 +1,9 @@
+<!-- Backdrop (solo overlay) -->
+<div
+  *ngIf="mode === 'overlay' && expanded && hasBackdrop"
+  class="sp-backdrop"
+  (click)="onBackdropClick()">
+</div>
+
+<!-- El panel es el host; solo proyectamos contenido -->
+<ng-content></ng-content>

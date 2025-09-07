@@ -1,0 +1,63 @@
+:host {
+  --panel-width: 35vw;
+  --panel-collapsed-width: 0px;
+  box-sizing: border-box;
+  background: var(--panel-bg, #fff);
+  color: inherit;
+  overflow: hidden;
+}
+
+/* ------- Overlay (tipo “drawer”) ------- */
+:host.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: var(--panel-width);
+  z-index: 1000;
+  transition: transform .25s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .2);
+}
+
+:host.overlay.left {
+  left: 0;
+  transform: translateX(-100%);
+}
+
+:host.overlay.right {
+  right: 0;
+  transform: translateX(100%);
+}
+
+:host.overlay.expanded {
+  transform: translateX(0);
+}
+
+:host.overlay:not(.expanded) {
+  pointer-events: none;
+}
+
+.sp-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 999;
+}
+
+/* ------- Persistente ------- */
+:host.persistent {
+  position: relative;
+  height: 100%;
+  width: var(--panel-width);
+  transition: width .25s ease;
+  border-right: 1px solid #e5e7eb;
+}
+
+:host.persistent.right {
+  border-right: none;
+  border-left: 1px solid #e5e7eb;
+}
+
+:host.persistent:not(.expanded) {
+  width: var(--panel-collapsed-width);
+  box-shadow: none;
+}
