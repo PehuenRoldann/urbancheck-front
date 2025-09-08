@@ -30,7 +30,7 @@ style="background-color: blue; width: 100%; height: 100vh; display: flex; justif
                   <app-pill [ticketState]="
                   currentStatus === undefined
                   ? 'Sin estado'
-                  : ticketData.state === 'V_lido'
+                  : currentStatus === 'V_lido'
                   ? 'Válido'
                   : currentStatus
                   " />
