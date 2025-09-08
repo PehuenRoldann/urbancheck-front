@@ -31,7 +31,7 @@ export class TicketAdministartionPanelComponent implements OnInit {
 
   public maxPagesCount: number = -1;
   public currentPageNumber: number = 1;
-  public tableRowsLimit: number = 14;
+  public tableRowsLimit: number = 12;
 
   public filter: TicketFilterInput = {
     page: this.currentPageNumber,
