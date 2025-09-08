@@ -11,6 +11,10 @@ export class TicketQueries {
           longitude
           timestamp
           image_url
+          current_status {
+            id
+            description
+          }
           its
           issue {
             id
@@ -54,7 +58,7 @@ export class TicketQueries {
   static readonly TicketStatusHistory = gql`
   query TicketStatusHistory ($id: String!) {
     ticketStatusHistory (id: $id) {
-      
+
       ... on StatusHistory {
         id
         its
@@ -67,7 +71,7 @@ export class TicketQueries {
           last_name
           dni
         }
-        
+
         ticket_status {
           id
           description

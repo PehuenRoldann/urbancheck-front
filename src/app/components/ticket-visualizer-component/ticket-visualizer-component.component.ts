@@ -10,6 +10,10 @@ import {
   MapServiceInterface,
 } from '@app/interfaces/map.service.interface';
 import { Ticket } from '@app/interfaces/ticket.interface';
+import { TicketSatusService } from '@app/services/ticket-satus.service';
+import { TicketStatus } from '@app/interfaces/ticket_status.interface';
+
+import { Priorities, Statuses } from '@app/utils/consts';
 
 @Component({
   selector: 'app-ticket-visualizer-component',
@@ -18,6 +22,8 @@ import { Ticket } from '@app/interfaces/ticket.interface';
 })
 export class TicketVisualizerComponentComponent implements OnDestroy {
   @Input() userRoleId: number | null = null;
+
+  ticketStates: TicketStatus[] = [];
 
   private _ticketId: string | null = null;
 selectedStateToUpdate: any;
@@ -36,6 +42,14 @@ selectedStateToUpdate: any;
   }
   get ticketId() {
     return this._ticketId;
+  }
+
+  get statusList() {
+    return Array.from(Statuses.values());
+  }
+
+  get currentStatus (): string | undefined {
+    return this.ticketData?.current_status?.description;
   }
 
   public ticketData: Ticket | null = null;
@@ -57,13 +71,14 @@ selectedStateToUpdate: any;
     @Inject(TICKET_SERVICE_INTERFACE_TOKEN)
     private ticketDataService: TicketServiceInterface,
     @Inject(MAP_SERVICE_INTERFACE_TOKEN)
-    private mapService: MapServiceInterface
+    private mapService: MapServiceInterface,
   ) {
     // 1) Escuchá el ticket
     this.ticketDataService.ticketData$
       .pipe(
         tap((td) => {
           this.ticketData = td || null;
+
           // cuando llega el ticket, si hay coords, pedí dirección
           if (td && td.latitude != null && td.longitude != null) {
             this.mapService.UpdateAddressFromCoords(td.latitude, td.longitude);
@@ -89,8 +104,10 @@ selectedStateToUpdate: any;
       )
       .subscribe((addr) => {
         this.address = addr ?? 'No encontrado';
+        this.selectedStateToUpdate = this.currentStatus;
         this.isLoading = false; // apagamos cuando ya tenemos dirección
       });
+
   }
 
   ngOnDestroy() {

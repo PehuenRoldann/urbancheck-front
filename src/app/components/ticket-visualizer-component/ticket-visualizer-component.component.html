@@ -80,10 +80,11 @@ style="background-color: blue; width: 100%; height: 100vh; display: flex; justif
           id="state-select"
           [(ngModel)]="selectedStateToUpdate"
           >
-            <option value="V_lido">Válido</option>
-            <option value="I_lido">Inválido</option>
-            <option value="En_proceso">En proceso</option>
-            <option value="Completado">Completado</option>
+            <option
+            *ngFor="let status of statusList"
+            [value]="status">
+            {{ status }}
+          </option>
           </select>
           <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
             <button
