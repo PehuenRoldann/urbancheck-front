@@ -120,20 +120,20 @@ style="background-color: blue; width: 100%; height: 100vh; display: flex; justif
           <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
             <button
             class="update-btn-ticket"
-            (click)="updateTicket()">Actualizar ticket</button>
+            (click)="updateTicket()">Actualizar</button>
           </div>
         </div>
        </div>
 
-
-
+       <div style="width: 100; height: 5vh;"></div>
   </div>
 
 
 
   <ng-template #noDataTemplate>
-    <div class="flex-col-centered-container">
-      <h3>No se pudo cargar la información del ticket.</h3>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-around; height: 100%;">
+      <img src="assets/images/urbancheck.png" alt="Logo urbancheck">
+      <p>Seleccione un reclamo para ver sus datos...</p>
     </div>
   </ng-template>
 

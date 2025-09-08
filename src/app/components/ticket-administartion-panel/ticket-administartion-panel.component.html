@@ -110,9 +110,20 @@
                         </div>
                     </div>
                     <div class="ticket-admin-panel-ticket-container">
-                      <app-ticket-visualizer-component
-                        [ticketId]="selectedTicketId"
-                      ></app-ticket-visualizer-component>
+                      <app-side-panel
+                        mode="persistent"
+                        position="right"
+                        [background]="'#4B5C67CC'"
+                        width="35vw"
+                        [hasBackdrop]="false"
+                        [closeOnBackdrop]="false"
+                        >
+                        <!-- contenido del panel -->
+                        <app-ticket-visualizer-component
+                          [ticketId]="selectedTicketId"
+                          [userRoleId]="currentRolId"
+                        ></app-ticket-visualizer-component>
+                      </app-side-panel>
                     </div>
 
                 </div>

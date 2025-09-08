@@ -72,7 +72,7 @@ selectedScheduledDate: any;
 
   private destroy$ = new Subject<void>();
 
-  administrationRoles = [1, 3, 4, 2]; // IDs de roles que tienen permisos de administración
+  administrationRoles = [1, 3, 4]; // IDs de roles que tienen permisos de administración
 
   get canAdminister(): boolean {
     return (

@@ -4,24 +4,26 @@ import { TicketFilterInput } from '@app/graphql/types/ticket.types';
 import { Ticket } from '@app/interfaces/ticket.interface';
 import { TICKET_SERVICE_INTERFACE_TOKEN, TicketServiceInterface } from '@app/interfaces/ticket.service.interface';
 import { TicketStatus } from '@app/interfaces/ticket_status.interface';
+import { User } from '@app/interfaces/user.interface';
 import { TicketSatusService } from '@app/services/ticket-satus.service';
 import { UserService } from '@app/services/user.service';
 
 @Component({
   selector: 'app-ticket-administartion-panel',
   templateUrl: './ticket-administartion-panel.component.html',
-  styleUrls: ['./ticket-administartion-panel.component.css']
+  styleUrls: ['./ticket-administartion-panel.component.css'],
 })
 export class TicketAdministartionPanelComponent implements OnInit {
-minimized_ticket_id(arg0: string) {
-  return arg0.split('-')[0];
-}
-selectedTicketId: any;
+  minimized_ticket_id(arg0: string) {
+    return arg0.split('-')[0];
+  }
+  selectedTicketId: any;
 
-selectTicket(arg0: string) {
+  selectTicket(arg0: string) {
     this.selectedTicketId = arg0;
-}
+  }
 
+  public user!: User;
 
   public ticketList: Ticket[] = [];
   private statusList: TicketStatus[] = [];
@@ -34,21 +36,29 @@ selectTicket(arg0: string) {
   public filter: TicketFilterInput = {
     page: this.currentPageNumber,
     limit: this.tableRowsLimit,
+  };
+
+  get currentRolId () {
+    return Number(this.user.role?.id) ?? -1;
   }
 
 
   constructor(
-    @Inject(TICKET_SERVICE_INTERFACE_TOKEN) private ticketDataService: TicketServiceInterface,
+    @Inject(TICKET_SERVICE_INTERFACE_TOKEN)
+    private ticketDataService: TicketServiceInterface,
     private userService: UserService,
     private router: Router,
-    private ticketSatusService: TicketSatusService,
+    private ticketSatusService: TicketSatusService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.user = await this.userService.getUserData();
+
+    console.log("user data: ", this.user);
 
     this.ticketDataService.ticketCounter$.subscribe((max_tickets) => {
       this.maxPagesCount = Math.ceil(max_tickets / this.tableRowsLimit);
-    })
+    });
 
     this.ticketDataService.ticketList$.subscribe((ticketList) => {
       this.ticketList = ticketList;
@@ -67,15 +77,12 @@ selectTicket(arg0: string) {
   }
 
   formatDate(date: Date): string {
-
     const dateStr = date.toString();
 
     return dateStr.split('T')[0];
-
   }
 
   changePageTo(pageNumber: number) {
-
     this.showSpinner = true;
 
     if (pageNumber < 1) return;
@@ -88,34 +95,32 @@ selectTicket(arg0: string) {
   }
 
   get currentPagesNavigator(): number[] {
-
     if (this.currentPageNumber == 1 || this.currentPageNumber == 2) {
       const toReturn = [];
       for (let i = 0; i < 3; i++) {
-
-        if (i+1 <= this.maxPagesCount) toReturn.push(i+1);
+        if (i + 1 <= this.maxPagesCount) toReturn.push(i + 1);
       }
 
-      return toReturn
-    }
-    else if (
+      return toReturn;
+    } else if (
       this.currentPageNumber == this.maxPagesCount ||
       this.currentPageNumber == this.maxPagesCount - 1
     ) {
       return [
         this.maxPagesCount - 2,
         this.maxPagesCount - 1,
-        this.maxPagesCount
-      ]
+        this.maxPagesCount,
+      ];
     }
 
     return [
-      this.currentPageNumber -1,
+      this.currentPageNumber - 1,
       this.currentPageNumber,
-      this.currentPageNumber + 1
-    ]
-
-
+      this.currentPageNumber + 1,
+    ];
   }
 
+  onTicketUpdated($event: Event) {
+    console.log("Ticket updated");
+  }
 }
