@@ -23,8 +23,6 @@ export const enum ModalIds {
   styleUrls: ['./map-common.component.css'],
 })
 export class MapCommonComponent implements OnInit {
-
-
   public currentCoorsd: { lng: number; lat: number } = { lng: 0, lat: 0 };
   public mapStatus!: number;
   @ViewChild(TicketViewModalComponent)
@@ -36,25 +34,25 @@ export class MapCommonComponent implements OnInit {
     [ModalIds.adminPanel]: 'adminPanel',
     [ModalIds.ticketCreationModal]: 'ticketCrationModal',
     [ModalIds.ticketViewModal]: 'ticketViewModal',
-    [ModalIds.profileModal]: 'profileModal'
-  }
+    [ModalIds.profileModal]: 'profileModal',
+  };
   public showSidePanel: boolean = false;
   public selectedTicketId: string | null = null;
 
-
   constructor(
-    @Inject(TICKET_SERVICE_INTERFACE_TOKEN) private ticketDataService: TicketServiceInterface,
-    @Inject(MAP_SERVICE_INTERFACE_TOKEN) private geoService: MapServiceInterface,
+    @Inject(TICKET_SERVICE_INTERFACE_TOKEN)
+    private ticketDataService: TicketServiceInterface,
+    @Inject(MAP_SERVICE_INTERFACE_TOKEN)
+    private geoService: MapServiceInterface,
     private userService: UserService,
-    private router: Router,
+    private router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
-
     this.userData = await this.userService.getUserData();
     this.userData.role!.id = Number(this.userData.role!.id);
 
-    console.log("DEBUG ROLE USER");
+    console.log('DEBUG ROLE USER');
     console.log(this.userData.role);
 
     this.geoService.initializeMap('map');
@@ -77,18 +75,14 @@ export class MapCommonComponent implements OnInit {
       if (markerData && markerData.id) {
         this.selectedTicketId = markerData.id;
         this.showSidePanel = true;
-
       }
-
-
     });
 
     this.ticketDataService.markersData$.subscribe((markerDataRes) => {
-
-      this.markersData = markerDataRes.length > 0? markerDataRes : [];
+      this.markersData = markerDataRes.length > 0 ? markerDataRes : [];
 
       this.geoService.DrawMarkers(this.markersData);
-    })
+    });
 
     this.ticketDataService.UpdateMarkersData();
   }
@@ -111,11 +105,15 @@ export class MapCommonComponent implements OnInit {
     this.geoService.removeLastMark();
   }
 
-
-
   showAlert(message: string, type: string): void {
     const alert = document.createElement('div');
-    alert.classList.add('alert', `alert-${type}`, 'alert-dismissible', 'fade', 'show');
+    alert.classList.add(
+      'alert',
+      `alert-${type}`,
+      'alert-dismissible',
+      'fade',
+      'show'
+    );
     alert.setAttribute('role', 'alert');
     alert.innerHTML = `
       ${message}
@@ -134,11 +132,14 @@ export class MapCommonComponent implements OnInit {
   }
 
   goToAdminPanel() {
-    this.router.navigate(['/admin'])
+    this.router.navigate(['/admin']);
   }
 
-
   onTicketUpdated($event: Event) {
-    console.log("No se puede actualizar el ticket.");
+    console.log('No se puede actualizar el ticket.');
+  }
+
+  closeSidePanel() {
+    this.showSidePanel = false;
   }
 }

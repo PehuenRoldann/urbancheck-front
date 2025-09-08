@@ -68,6 +68,33 @@ style="background-color: blue; width: 100%; height: 100vh; display: flex; justif
       </div>
 
 
+      <!-- Administración -->
+       <div *ngIf="canAdminister" class="flex-col-centered-container" id="admin_container">
+        <h6 class="title-section">Administración</h6>
+        <div class="administration-inputs-container">
+          <label for="">Fecha de programación</label>
+          <input type="date" name="programed-date" id="programed-date-input">
+          <label for="">Estado</label>
+          <select
+          name="state-select"
+          id="state-select"
+          [(ngModel)]="selectedStateToUpdate"
+          >
+            <option value="V_lido">Válido</option>
+            <option value="I_lido">Inválido</option>
+            <option value="En_proceso">En proceso</option>
+            <option value="Completado">Completado</option>
+          </select>
+          <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
+            <button
+            class="update-btn-ticket"
+            (click)="updateTicket()">Actualizar ticket</button>
+          </div>
+        </div>
+       </div>
+
+
+
   </div>
 
 

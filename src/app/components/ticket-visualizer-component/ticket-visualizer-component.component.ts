@@ -20,6 +20,7 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
   @Input() userRoleId: number | null = null;
 
   private _ticketId: string | null = null;
+selectedStateToUpdate: any;
   @Input()
   set ticketId(value: string | null) {
     if (this._ticketId === value) return;
@@ -42,6 +43,15 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
   isLoading = false;
 
   private destroy$ = new Subject<void>();
+
+  administrationRoles = [1, 3, 4, 2]; // IDs de roles que tienen permisos de administración
+
+  get canAdminister(): boolean {
+    return (
+      this.userRoleId !== null &&
+      this.administrationRoles.includes(this.userRoleId)
+    );
+  }
 
   constructor(
     @Inject(TICKET_SERVICE_INTERFACE_TOKEN)
@@ -96,5 +106,9 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+  }
+
+  updateTicket() {
+    console.log('Update ticket clicked');
   }
 }

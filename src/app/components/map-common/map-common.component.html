@@ -39,10 +39,17 @@
       [(expanded)]="showSidePanel"
       [background]="'#4B5C67CC'"
       width="35vw"
+      [hasBackdrop]="false"
+      [closeOnBackdrop]="false"
       (closed)="showSidePanel = false">
       <!-- contenido del panel -->
       <div style="display: flex; width: 100%; height: auto; justify-content: flex-start; align-items: center;">
-        <img src="assets/images/close_small_btn.svg" alt="close button" (click)="showSidePanel = false" style="cursor: pointer; width: 30px; height: 30px; margin: 10px;">
+        <img
+          src="assets/images/close_small_btn.svg"
+          alt="close button"
+          (click)="closeSidePanel()"
+          style="cursor: pointer; width: 30px; height: 30px; margin: 10px;"
+        >
       </div>
       <app-ticket-visualizer-component
         [ticketId]="selectedTicketId"

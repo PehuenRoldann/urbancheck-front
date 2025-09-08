@@ -48,7 +48,7 @@ export interface Ticket {
 export function emptyTicket(): Ticket {
   const emptyTicket: Ticket = {
     id: '',
-  
+
     // opcionales, pueden omitirse o definirse como:
     description: '',
     latitude: 0,
@@ -66,5 +66,5 @@ export function emptyTicket(): Ticket {
   };
 
   return emptyTicket;
-  
+
 }
