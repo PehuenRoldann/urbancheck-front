@@ -14,6 +14,7 @@ import { TicketSatusService } from '@app/services/ticket-satus.service';
 import { TicketStatus } from '@app/interfaces/ticket_status.interface';
 
 import { Priorities, Statuses } from '@app/utils/consts';
+import { findKeyByValue, formatForDateInput } from '@app/utils/utils';
 
 @Component({
   selector: 'app-ticket-visualizer-component',
@@ -23,10 +24,11 @@ import { Priorities, Statuses } from '@app/utils/consts';
 export class TicketVisualizerComponentComponent implements OnDestroy {
   @Input() userRoleId: number | null = null;
 
-  ticketStates: TicketStatus[] = [];
 
   private _ticketId: string | null = null;
 selectedStateToUpdate: any;
+selectedPriorityToUpdate: any;
+selectedScheduledDate: any;
   @Input()
   set ticketId(value: string | null) {
     if (this._ticketId === value) return;
@@ -48,8 +50,20 @@ selectedStateToUpdate: any;
     return Array.from(Statuses.values());
   }
 
+  get priorityList() {
+    return Array.from(Priorities.values());
+  }
+
   get currentStatus (): string | undefined {
     return this.ticketData?.current_status?.description;
+  }
+
+  get currentPriority (): string | undefined {
+    return this.ticketData?.current_priority?.description;
+  }
+
+  get currentScheduledDate (): string | undefined {
+    return formatForDateInput(this.ticketData?.scheduled_resolution_at) ?? undefined;
   }
 
   public ticketData: Ticket | null = null;
@@ -105,6 +119,8 @@ selectedStateToUpdate: any;
       .subscribe((addr) => {
         this.address = addr ?? 'No encontrado';
         this.selectedStateToUpdate = this.currentStatus;
+        this.selectedPriorityToUpdate = this.currentPriority;
+        this.selectedScheduledDate = this.currentScheduledDate;
         this.isLoading = false; // apagamos cuando ya tenemos dirección
       });
 
@@ -126,6 +142,24 @@ selectedStateToUpdate: any;
   }
 
   updateTicket() {
-    console.log('Update ticket clicked');
+
+    const date =
+      this.selectedScheduledDate === this.currentScheduledDate
+        ? null
+        : new Date(this.selectedScheduledDate + 'T00:00:00');
+
+    const statusId =
+      this.selectedStateToUpdate === this.currentStatus
+      ? null
+      : findKeyByValue (Statuses, this.selectedStateToUpdate);
+
+    const priorityId =
+      this.selectedPriorityToUpdate === this.currentPriority
+      ? null
+      : findKeyByValue (Priorities, this.selectedPriorityToUpdate);
+
+
+    this.ticketDataService.UpdateCurrentTicketWithNewInfo(date, statusId, priorityId);
+    this.ticketDataService.UpdateTicketData(this.ticketData!.id);
   }
 }

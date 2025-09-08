@@ -172,3 +172,11 @@ textarea {
   background-color: var(--color); /* Verde más oscuro al pasar el ratón */
   color: var(--bg-color);
 }
+
+.updatable-field-div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+}

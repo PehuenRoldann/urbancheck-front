@@ -15,4 +15,25 @@ export class TicketMutations {
       }
     }
   `;
+
+  static readonly UPDATE_TICKET = gql`
+    mutation UpdateTicket($updateTicketInput: UpdateTicketInput!) {
+      updateTicket(updateTicketInput: $updateTicketInput) {
+        ... on Ticket {
+          id
+          description
+          scheduled_resolution_at
+          current_status {
+            id
+            description
+          }
+          current_priority {
+            id
+            description
+          }
+        }
+      }
+    }
+  `;
 }
+

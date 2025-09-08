@@ -27,8 +27,21 @@ interface CreateTicketInput {
 }
 
 
+interface UpdateTicketInput {
+  id: string;
+  description?: string;
+  latitude?: number;
+  longitude?: number;
+  statusId?: number;
+  priorityId?: number;
+  issueId?: number;
+  imageUrl?: string | null;
+  scheduledResolutionAt?: Date | null;
+}
 
-@Injectable({ providedIn: "root" })
+
+
+@Injectable({ providedIn: 'root' })
 export class TicketService implements TicketServiceInterface {
   private markersDataSubject = new BehaviorSubject<MarkerData[]>([]); // Markers info to draw markers
   public markersData$ = this.markersDataSubject.asObservable();
@@ -46,12 +59,9 @@ export class TicketService implements TicketServiceInterface {
 
   constructor(private readonly keycloak: KeycloakService) {}
 
-
-
   private async generateGqlClient(): Promise<GraphQLClient> {
-
     const token = await this.keycloak.getToken();
-    if (!token) throw new Error("No se pudo obtener el token.");
+    if (!token) throw new Error('No se pudo obtener el token.');
 
     const client = new GraphQLClient(this.endpoint, {
       headers: {
@@ -62,14 +72,49 @@ export class TicketService implements TicketServiceInterface {
     return client;
   }
 
+  async UpdateCurrentTicketWithNewInfo(
+    scheduledResolutionAt: Date | null,
+    statusId: number | null,
+    priorityId: number | null
+  ): Promise<Ticket | ErrorResponse> {
+    const client = await this.generateGqlClient();
+
+    const currentTicket = this.ticketDataSubject.getValue();
+    if (!currentTicket) {
+      return Promise.reject('No hay ticket seleccionado actualmente.');
+    }
+
+    const input: UpdateTicketInput = {
+      id: currentTicket.id,
+      scheduledResolutionAt: scheduledResolutionAt ?? null,
+      statusId: statusId ?? undefined,
+      priorityId: priorityId ?? undefined,
+    };
+
+    const variables = { updateTicketInput: input };
+
+    try {
+      const response = await client.request<{ updateTicket: Ticket }>(
+        TicketMutations.UPDATE_TICKET,
+        variables
+     );
+     this.UpdateTicketData(currentTicket.id); // Refresca los datos del ticket actual
+     return response.updateTicket;
+    }
+    catch (error) {
+      console.error('Error al actualizar el ticket:', error);
+      return { message: 'Error al actualizar el ticket' } as ErrorResponse;
+     }
+
+  }
+
   async AddTicket(
     description: string,
     issueId: number,
     longitud: number,
     latitud: number,
-    ticketImgUrl: string,
+    ticketImgUrl: string
   ): Promise<Ticket | ErrorResponse> {
-
     const client = await this.generateGqlClient();
 
     const input: CreateTicketInput = {
@@ -83,21 +128,16 @@ export class TicketService implements TicketServiceInterface {
     };
 
     const variables = { input: input };
-    console.log("DEBUG - Variables para CreateTicket:", variables);
-    debugger;
-
 
     const response = await client.request<TicketResult>(
       TicketMutations.CREATE_TICKET,
-      variables,
+      variables
     );
 
-    console.log("DEBUG - Response de CreateTicket:", response);
-    debugger;
 
     const result = response.createTicket;
 
-    if ("id" in result && "description" in result) {
+    if ('id' in result && 'description' in result) {
       const ticket: Ticket = result;
       return ticket;
     }
@@ -108,37 +148,38 @@ export class TicketService implements TicketServiceInterface {
   }
 
   async UpdateMarkersData(): Promise<void> {
-
     const client = await this.generateGqlClient();
 
     const response = await client.request<{ findTickets: Ticket[] }>(
-      TicketQueries.FindTickets,
+      TicketQueries.FindTickets
     );
 
-
-    const markerData: MarkerData[] = []
+    const markerData: MarkerData[] = [];
     response.findTickets.forEach((element: Ticket) => {
       markerData.push({
         id: element.id,
         latitude: element.latitude!,
-        longitude: element.longitude!
-      })
+        longitude: element.longitude!,
+      });
     });
 
     this.markersDataSubject.next(markerData);
   }
 
   async UpdateTicketData(id: string): Promise<void> {
-
     const client = await this.generateGqlClient();
 
-    const responseTicket = await client.request<{ ticket: Ticket }>(TicketQueries.Ticket, {
-      id: id,
-    });
+    const responseTicket = await client.request<{ ticket: Ticket }>(
+      TicketQueries.Ticket,
+      {
+        id: id,
+      }
+    );
 
     const ticket = responseTicket.ticket;
 
-    const responseUser = await client.request<{ticketAuthor: UserResponse}>(UserQueries.TicketAuthor,
+    const responseUser = await client.request<{ ticketAuthor: UserResponse }>(
+      UserQueries.TicketAuthor,
       {
         id: ticket.id,
       }
@@ -150,34 +191,31 @@ export class TicketService implements TicketServiceInterface {
       const user = authorResult as unknown as User;
 
       ticket.createdBy = user.first_name + ' ' + user.last_name;
-
     } else {
-      const error = authorResult as unknown as  ErrorResponse;
-      console.error("Es un ErrorResponse:", error.message);
+      const error = authorResult as unknown as ErrorResponse;
+      console.error('Es un ErrorResponse:', error.message);
     }
 
-    const StatusHistory = await client.request<{ticketStatusHistory: StatusHistory[]}>(TicketQueries.TicketStatusHistory,
-      {
-        id: ticket.id
-      }
-    );
+    const StatusHistory = await client.request<{
+      ticketStatusHistory: StatusHistory[];
+    }>(TicketQueries.TicketStatusHistory, {
+      id: ticket.id,
+    });
 
-
-    ticket.state = StatusHistory.ticketStatusHistory[0].ticket_status?.description;
+    ticket.state =
+      StatusHistory.ticketStatusHistory[0].ticket_status?.description;
 
     this.ticketDataSubject.next(ticket);
   }
 
-
   async UpdateTicketList(filter?: TicketFilterInput): Promise<void> {
-
     await sleep(1000); // DEBUG
 
     const client = await this.generateGqlClient();
 
     const variables = {
-      filter: filter || {}
-    }
+      filter: filter || {},
+    };
 
     const response = await client.request<{ findTickets: Ticket[] }>(
       TicketQueries.TicketListToShow,
@@ -188,7 +226,6 @@ export class TicketService implements TicketServiceInterface {
     console.log(response.findTickets);
 
     this.ticketListSubject.next(response.findTickets);
-
   }
 
   async UpdateTicketCounter(filter?: TicketFilterInput): Promise<void> {
@@ -197,8 +234,8 @@ export class TicketService implements TicketServiceInterface {
     const client = await this.generateGqlClient();
 
     const variables = {
-      filter: filter || {}
-    }
+      filter: filter || {},
+    };
 
     const response = await client.request<{ countTickets: number }>(
       TicketQueries.CountTickets,
@@ -210,5 +247,4 @@ export class TicketService implements TicketServiceInterface {
 
     this.ticketCounterSubject.next(response.countTickets);
   }
-
 }

@@ -15,6 +15,11 @@ export class TicketQueries {
             id
             description
           }
+          current_priority {
+            id
+            description
+          }
+          scheduled_resolution_at
           its
           issue {
             id
@@ -56,75 +61,73 @@ export class TicketQueries {
   `;
 
   static readonly TicketStatusHistory = gql`
-  query TicketStatusHistory ($id: String!) {
-    ticketStatusHistory (id: $id) {
-
-      ... on StatusHistory {
-        id
-        its
-        author_id
-        ticket_id
-        status_id
-        user_account {
+    query TicketStatusHistory($id: String!) {
+      ticketStatusHistory(id: $id) {
+        ... on StatusHistory {
           id
-          first_name
-          last_name
-          dni
-        }
+          its
+          author_id
+          ticket_id
+          status_id
+          user_account {
+            id
+            first_name
+            last_name
+            dni
+          }
 
-        ticket_status {
+          ticket_status {
+            id
+            description
+          }
+        }
+      }
+    }
+  `;
+
+  static readonly TicketStatus = gql`
+    query TicketStatus {
+      ticketStatus {
+        ... on TicketStatus {
           id
           description
         }
+        ... on ErrorResponse {
+          message
+          code
+          path
+        }
       }
     }
-  }
-  `;
-
-
-  static readonly TicketStatus = gql`
-  query TicketStatus {
-    ticketStatus {
-      ... on TicketStatus {
-        id
-        description
-      }
-      ... on ErrorResponse {
-        message
-        code
-        path
-      }
-    }
-  }
   `;
 
   static readonly TicketListToShow = gql`
-  query TicketListToShow($filter: TicketFilterInput) {
-    findTickets(filter: $filter) {
-      ... on Ticket {
-        id
-        its
-        author {
+    query TicketListToShow($filter: TicketFilterInput) {
+      findTickets(filter: $filter) {
+        ... on Ticket {
           id
-          first_name
-          last_name
-        }
-        current_status {
-          id
-          description
-        }
-        dependency {
-          id
-          name
+          its
+          author {
+            id
+            first_name
+            last_name
+          }
+          current_status {
+            id
+            description
+          }
+          dependency {
+            id
+            name
+          }
         }
       }
     }
-  }
   `;
 
   static readonly CountTickets = gql`
-  query CountTickets ($filter: TicketFilterInput) {
-    countTickets(filter: $filter)
-  }
+    query CountTickets($filter: TicketFilterInput) {
+      countTickets(filter: $filter)
+    }
   `;
 }

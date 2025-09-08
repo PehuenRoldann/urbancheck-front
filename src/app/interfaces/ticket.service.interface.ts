@@ -28,6 +28,12 @@ export interface TicketServiceInterface {
   /** Updates the ticket list values */
   UpdateTicketList(filter?: TicketFilterInput): Promise<void>;
   UpdateTicketCounter(filter?: TicketFilterInput): Promise<void>;
+
+  UpdateCurrentTicketWithNewInfo(
+    scheduledResolutionAt: Date | null,
+    statusId: number | null,
+    priorityId: number | null,
+  ): Promise<Ticket | ErrorResponse>;
 }
 
 // Crea el token de inyección

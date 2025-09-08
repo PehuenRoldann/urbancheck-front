@@ -1,5 +1,6 @@
 import { Dependency } from "./dependency.interface";
 import { Issue } from "./issue.interface";
+import { Priority } from "./priority.interface";
 import { PriorityHistory } from "./priority_history.entity";
 import { StatusHistory } from "./status_history.interface";
 import { Subscription } from "./subscription.interface";
@@ -39,9 +40,13 @@ export interface Ticket {
 
   current_status?: TicketStatus;
 
+  current_priority?: Priority;
+
   author?: User;
 
   dependency?: Dependency;
+
+  scheduled_resolution_at?: Date;
 }
 
 
