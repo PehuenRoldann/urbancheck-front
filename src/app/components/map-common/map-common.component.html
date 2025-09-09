@@ -1,116 +1,126 @@
-
 <div id="map-container">
-
-    <div class="spinner-container" [ngStyle]="{'display': (mapStatus === 0) ? 'flex' : 'none'}">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
+  <div
+    class="spinner-container"
+    [ngStyle]="{ display: mapStatus === 0 ? 'flex' : 'none' }"
+  >
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
-    <div [ngStyle]="{'visibility': (mapStatus === 1) ? 'visible' : 'hidden'}">
-      <div id="map"></div>
+  </div>
+  <div [ngStyle]="{ visibility: mapStatus === 1 ? 'visible' : 'hidden' }">
+    <div id="map"></div>
+  </div>
+  <div [ngStyle]="{ visibility: mapStatus === 2 ? 'visible' : 'hidden' }">
+    <h1>There has been a problem with the map!!</h1>
+  </div>
+
+  <nav id="nav-bar">
+    <span class="nav-button" (click)="openModal(modalIds[3])"
+      ><img class="nav-btn-img" src="assets/images/Vectorperson.svg" alt=""
+    /></span>
+    <span class="nav-button"
+      ><img class="nav-btn-img" src="assets/images/megaphone.svg" alt=""
+    /></span>
+    <span class="nav-button"
+      ><img class="nav-btn-img" src="assets/images/notices-board.svg" alt=""
+    /></span>
+    <span
+      *ngIf="(userData?.role)!.id !== 2"
+      class="nav-button"
+      (click)="goToAdminPanel()"
+      ><img
+        class="nav-btn-img"
+        src="assets/images/task-list-svgrepo-com.svg"
+        alt=""
+    /></span>
+  </nav>
+
+  <app-side-panel
+    mode="overlay"
+    position="right"
+    [(expanded)]="showSidePanel"
+    [background]="'#4B5C67CC'"
+    width="35vw"
+    [hasBackdrop]="false"
+    [closeOnBackdrop]="false"
+    (closed)="showSidePanel = false"
+  >
+    <!-- contenido del panel -->
+    <div
+      style="
+        display: flex;
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+        align-items: center;
+      "
+    >
+      <img
+        src="assets/images/close_small_btn_white.svg"
+        alt="close button"
+        (click)="closeSidePanel()"
+        style="cursor: pointer; width: 30px; height: 30px; margin: 10px"
+      />
     </div>
-    <div [ngStyle]="{'visibility': (mapStatus === 2) ? 'visible' : 'hidden'}">
-        <h1>There has been a problem with the map!!</h1>
-    </div>
-
-
-    <nav id="nav-bar">
-        <span class="nav-button" (click)="openModal(modalIds[3])"
-            ><img class="nav-btn-img" src="assets/images/Vectorperson.svg" alt=""
-        /></span>
-        <span class="nav-button"
-            ><img class="nav-btn-img" src="assets/images/megaphone.svg" alt=""
-        /></span>
-        <span class="nav-button"
-            ><img class="nav-btn-img" src="assets/images/notices-board.svg" alt=""
-        /></span>
-        <span
-            *ngIf="userData?.role!.id !== 2"
-            class="nav-button"
-            (click)="goToAdminPanel()"
-            ><img class="nav-btn-img" src="assets/images/task-list-svgrepo-com.svg" alt=""
-        /></span>
-    </nav>
-
-
-    <app-side-panel
-      mode="overlay"
-      position="right"
-      [(expanded)]="showSidePanel"
-      [background]="'#4B5C67CC'"
-      width="35vw"
-      [hasBackdrop]="false"
-      [closeOnBackdrop]="false"
-      (closed)="showSidePanel = false">
-      <!-- contenido del panel -->
-      <div style="display: flex; width: 100%; height: auto; justify-content: flex-start; align-items: center;">
-        <img
-          src="assets/images/close_small_btn.svg"
-          alt="close button"
-          (click)="closeSidePanel()"
-          style="cursor: pointer; width: 30px; height: 30px; margin: 10px;"
-        >
-      </div>
-      <app-ticket-visualizer-component
-        [ticketId]="selectedTicketId"
-        [userRoleId]="userData?.role!.id"
-        (closePanel)="showSidePanel = false"
-        (ticketUpdated)="onTicketUpdated($event)"
-      ></app-ticket-visualizer-component>
-    </app-side-panel>
-
-
+    <app-ticket-visualizer-component
+      [ticketId]="selectedTicketId"
+      [userRoleId]="(userData?.role)!.id"
+      (closePanel)="showSidePanel = false"
+      (ticketUpdated)="onTicketUpdated($event)"
+    ></app-ticket-visualizer-component>
+  </app-side-panel>
 </div>
 
 <!-- Modal -->
 <div
-    class="modal fade"
-    id="newTicketConfModal"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="myModalLabel"
-    aria-hidden="true"
+  class="modal fade"
+  id="newTicketConfModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
 >
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="myModalLabel">
-                    ¿Desea crear un ticket en esta ubicación?
-                </h5>
-            </div>
-            <div class="modal-body">
-                <p>Latitud: {{ currentCoorsd.lat }}</p>
-                <p>Longitud: {{ currentCoorsd.lng }}</p>
-            </div>
-            <div class="modal-footer">
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                    (click)="removeLastMark()"
-                  >
-                    Cerrar
-                </button>
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-dismiss="modal"
-                    (click)="openModal(modalIds[1])"
-                >
-                    Confirmar!
-                </button>
-            </div>
-        </div>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myModalLabel">
+          ¿Desea crear un ticket en esta ubicación?
+        </h5>
+      </div>
+      <div class="modal-body">
+        <p>Latitud: {{ currentCoorsd.lat }}</p>
+        <p>Longitud: {{ currentCoorsd.lng }}</p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          (click)="removeLastMark()"
+        >
+          Cerrar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-dismiss="modal"
+          (click)="openModal(modalIds[1])"
+        >
+          Confirmar!
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
+<app-ticket-creation-modal
+  [modalId]="modalIds[1]"
+  (cancelTicket)="removeLastMark($event)"
+  (ticketCreated)="onTicketCreated($event)"
+/>
 
-<app-ticket-creation-modal [modalId]="modalIds[1]" (cancelTicket)="removeLastMark($event)" (ticketCreated)="onTicketCreated($event)"/>
-
-<app-ticket-view-modal [modalId]="modalIds[2]"/>
+<app-ticket-view-modal [modalId]="modalIds[2]" />
 
 <app-profile-modal [modalId]="modalIds[3]" />
 
 <!-- <app-ticket-administartion-panel [modalId]="modalIds[0]"/> -->
-
-
