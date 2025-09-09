@@ -15,24 +15,26 @@ export class PillComponent {
   }
 
   COLOR_MAP_HEX = new Map<string, string>([
-    [TicketStates.Pendiente, '#FFD93D'], // Amarillo fuerte
-    [TicketStates.Valido, '#4CAF50'], // Verde aprobado
-    [TicketStates.Rechazado, '#E53935'], // Rojo error
-    [TicketStates.Programada, '#2196F3'], // Azul info
-    [TicketStates.Resuleto, '#1976D2'], // Azul oscuro
-    [TicketStates.Finalizado, '#9E9E9E'], // Gris medio
-    [TicketStates.Cancelado, '#6D4C41'], // Marrón apagado
-    [TicketStates.Derivado, '#BDBDBD'], // Gris claro
+    [TicketStates.Pendiente, '#FFF7C2'], // Amarillo pastel
+    [TicketStates.Valido, '#C8E6C9'], // Verde pastel
+    [TicketStates.Rechazado, '#FFCDD2'], // Rojo pastel
+    [TicketStates.Programada, '#BBDEFB'], // Azul pastel
+    [TicketStates.Resuleto, '#C5CAE9'], // Azul oscuro pastel
+    [TicketStates.Finalizado, '#E0E0E0'], // Gris claro
+    [TicketStates.Cancelado, '#D7CCC8'], // Marrón claro
+    [TicketStates.Derivado, '#F5F5F5'], // Gris casi blanco
+    [TicketStates.Cuestionada, '#E1BEE7'], // Violeta pastel
   ]);
 
   COLOR_FONT_MAP = new Map<string, string>([
-    [TicketStates.Pendiente, '#212121'], // Texto negro sobre amarillo
-    [TicketStates.Valido, '#FFFFFF'], // Blanco sobre verde
-    [TicketStates.Rechazado, '#FFFFFF'], // Blanco sobre rojo
-    [TicketStates.Programada, '#FFFFFF'], // Blanco sobre azul
-    [TicketStates.Resuleto, '#FFFFFF'], // Blanco sobre azul oscuro
-    [TicketStates.Finalizado, '#212121'], // Negro sobre gris medio
-    [TicketStates.Cancelado, '#FFFFFF'], // Blanco sobre marrón
-    [TicketStates.Derivado, '#212121'], // Negro sobre gris claro
+    [TicketStates.Pendiente, '#FFD93D'], // Amarillo fuerte
+    [TicketStates.Valido, '#4CAF50'], // Verde fuerte
+    [TicketStates.Rechazado, '#E53935'], // Rojo fuerte
+    [TicketStates.Programada, '#2196F3'], // Azul fuerte
+    [TicketStates.Resuleto, '#1976D2'], // Azul oscuro fuerte
+    [TicketStates.Finalizado, '#424242'], // Gris oscuro para contraste
+    [TicketStates.Cancelado, '#6D4C41'], // Marrón fuerte
+    [TicketStates.Derivado, '#616161'], // Gris medio
+    [TicketStates.Cuestionada, '#5D0A8D'], // Violeta fuerte
   ]);
 }

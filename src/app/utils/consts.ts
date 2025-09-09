@@ -11,7 +11,7 @@ export const Statuses = new Map([
   [3, 'Programada'],
   [4, 'Resuelto'],
   [5, 'Finalizado'],
-  [6, 'Cuestionado'],
+  [6, 'Cuestionada'],
   [7, 'Rechazado'],
   [8, 'Derivado'],
   [9, 'Cancelado'],
