@@ -28,6 +28,7 @@ import { TicketAdministartionPanelComponent } from './components/ticket-administ
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { TicketVisualizerComponentComponent } from './components/ticket-visualizer-component/ticket-visualizer-component.component';
 import { SidePanelComponent } from './components/side-panel/side-panel.component';
+import { CollapsibleComponent } from './components/collapsible/collapsible.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { SidePanelComponent } from './components/side-panel/side-panel.component
     SpinnerComponent,
     TicketVisualizerComponentComponent,
     SidePanelComponent,
+    CollapsibleComponent,
     //    ReclamoModalComponent,
   ],
   imports: [

@@ -132,11 +132,7 @@ textarea {
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  margin-bottom: 50px;
   background-color: var(--bg-color);
-  padding: 5px;
-  border: 1px solid white;
-  border-radius: 5px;
 }
 
 #programed-date-input {
@@ -179,4 +175,64 @@ textarea {
   justify-content: flex-start;
   gap: 10px;
   width: 100%;
+}
+
+
+.history-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* dos columnas */
+  grid-template-rows: auto auto;
+  /* dos filas */
+  gap: 0.5rem 1rem;
+  /* espacio entre filas y columnas */
+  padding: 0.75rem;
+  border-bottom: 1px solid #444;
+  color: white;
+  /* opcional */
+}
+
+/* Ubicaciones */
+.history-item .estado {
+  grid-column: 1;
+  /* primera columna */
+  grid-row: 1;
+  /* primera fila */
+}
+
+.history-item .nombre {
+  grid-column: 2;
+  /* segunda columna */
+  grid-row: 1;
+  /* primera fila */
+  align-self: center;
+}
+
+.history-item .fecha {
+  grid-column: 1;
+  /* primera columna */
+  grid-row: 2;
+  /* segunda fila */
+}
+
+.history-item .rol {
+  grid-column: 2;
+  /* segunda columna */
+  grid-row: 2;
+  /* segunda fila */
+  align-self: center;
+}
+
+
+.history-item-reduced {
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  align-items: center;
+  justify-content: space-around;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid #444;
+  color: white;
+  /* opcional */
 }

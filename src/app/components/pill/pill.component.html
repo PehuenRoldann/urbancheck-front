@@ -1,4 +1,9 @@
-<p class="ticket-state"
-   [ngStyle]="{'background-color': COLOR_MAP_HEX.get(ticketState), 'color': COLOR_FONT_MAP.get(ticketState)}">
-   {{ ticketState }}
+<p
+  class="ticket-state"
+  [ngStyle]="{
+    'background-color': COLOR_MAP_HEX.get(ticketState),
+    color: COLOR_FONT_MAP.get(ticketState)
+  }"
+>
+  {{ ticketState }}
 </p>

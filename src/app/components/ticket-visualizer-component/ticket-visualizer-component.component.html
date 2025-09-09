@@ -1,52 +1,48 @@
 <div class="ticket-visualizer-component">
-
-
-  <div *ngIf="isLoading; else ticketDataTemplate" style="width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;">
-
+  <div
+    *ngIf="
+      isLoading && !isAddressLoaded && !isHistoryLoaded;
+      else ticketDataTemplate
+    "
+    style="
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
+  >
     <div class="spinner-border" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
-
   </div>
 
-
-<ng-template #ticketDataTemplate
-style="background-color: blue; width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;"
->
-
-  <div
-  *ngIf="ticketData; else noDataTemplate"
-  class="ticket-data-container"
+  <ng-template
+    #ticketDataTemplate
+    style="
+      background-color: blue;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
   >
-
+    <div *ngIf="ticketData; else noDataTemplate" class="ticket-data-container">
       <div class="flex-row-centered-container">
-              <div class="grid-container">
-                <div class="grid-item header">Creado por</div>
-                <div class="grid-item header">Fecha</div>
-                <div class="grid-item header">Estado</div>
-                <div class="grid-item">{{ ticketData!.createdBy }}</div>
-                <div class="grid-item">{{ dateFromTicket }}</div>
-                <div class="grid-item" style="display: flex; align-items: center; justify-content: center;">
-                  <app-pill [ticketState]="
-                  currentStatus === undefined
-                  ? 'Sin estado'
-                  : currentStatus === 'V_lido'
-                  ? 'Válido'
-                  : currentStatus
-                  " />
-                </div>
-              </div>
-      </div>
-
-      <!-- Descripción -->
-      <div class="flex-col-centered-container" id="description_container">
-        <h6 class="title-section">Descripción</h6>
-        <textarea
-          name=""
-          id="description-text-area"
-          readonly
-          [value]="ticketData ? ticketData.description : ''"
-        ></textarea>
+        <div class="grid-container">
+          <div class="grid-item header">Creado por</div>
+          <div class="grid-item header">Fecha</div>
+          <div class="grid-item header">Estado</div>
+          <div class="grid-item">{{ ticketData!.createdBy }}</div>
+          <div class="grid-item">{{ dateFromTicket }}</div>
+          <div
+            class="grid-item"
+            style="display: flex; align-items: center; justify-content: center"
+          >
+            <app-pill [ticketState]="currentStatus!" />
+          </div>
+        </div>
       </div>
 
       <!-- Imagen -->
@@ -62,80 +58,152 @@ style="background-color: blue; width: 100%; height: 100vh; display: flex; justif
         />
       </div>
 
-      <!-- Dirección -->
-      <div class="flex-col-centered-container" id="address_container">
-        <h6>Dirección</h6>
-        <textarea name="" id="" readonly [value]="address"></textarea>
-      </div>
+      <app-collapsible title="Descripción" [isOpen]="true">
+        <p>{{ ticketData.description }}</p>
+      </app-collapsible>
 
+      <app-collapsible title="Dirección y cooredenadas" [isOpen]="true">
+        <p>{{ address }}</p>
+        <p><strong>Longitud: </strong>{{ ticketData.longitude }}</p>
+        <p><strong>Latitud: </strong>{{ ticketData.latitude }}</p>
+      </app-collapsible>
+
+      <!-- Historial -->
+      <app-collapsible title="Historial" [isOpen]="false">
+        <ul
+          *ngIf="canAdminister"
+          style="width: 100%; overflow-y: scroll; max-height: 50vh"
+        >
+          <li class="history-item" *ngFor="let status of statusHistory">
+            <!-- Estado -->
+            <app-pill
+              class="estado"
+              [ticketState]="
+                status.ticket_status?.description! === 'V_lido'
+                  ? 'Válido'
+                  : status.ticket_status?.description!
+              "
+            ></app-pill>
+
+            <!-- Nombre -->
+            <p class="nombre">
+              {{
+                status.user_account?.first_name! +
+                  " " +
+                  status.user_account?.last_name!
+              }}
+            </p>
+
+            <!-- Fecha y hora -->
+            <p class="fecha">{{ status.its | date : "dd/MM/yyyy HH:mm" }}</p>
+
+            <!-- Rol -->
+            <p class="rol">
+              {{ rolesMap.get(status.user_account?.role_id ?? 1) }}
+            </p>
+          </li>
+        </ul>
+
+        <ul
+          *ngIf="!canAdminister"
+          style="width: 100%; overflow-y: scroll; max-height: 50vh"
+        >
+          <li class="history-item-reduced" *ngFor="let status of statusHistory">
+            <!-- Estado -->
+            <app-pill
+              class="estado"
+              [ticketState]="
+                status.ticket_status?.description! === 'V_lido'
+                  ? 'Válido'
+                  : status.ticket_status?.description!
+              "
+            ></app-pill>
+
+            <!-- Fecha y hora -->
+            <p class="fecha">{{ status.its | date : "dd/MM/yyyy HH:mm" }}</p>
+          </li>
+        </ul>
+      </app-collapsible>
 
       <!-- Administración -->
-       <div *ngIf="canAdminister" class="flex-col-centered-container" id="admin_container">
-        <h6 class="title-section">Administración</h6>
+      <app-collapsible
+        *ngIf="canAdminister"
+        title="Administración"
+        [isOpen]="true"
+      >
         <div class="administration-inputs-container">
-
           <div class="updatable-field-div">
             <label for="">Id:</label>
-            <span>{{this.ticketData.id}}</span>
+            <span>{{ this.ticketData.id }}</span>
           </div>
 
           <div class="updatable-field-div">
             <label for="">Programado para:</label>
-            <input type="date" name="programed-date" id="programed-date-input"
-            [(ngModel)]="selectedScheduledDate">
+            <input
+              type="date"
+              name="programed-date"
+              id="programed-date-input"
+              [(ngModel)]="selectedScheduledDate"
+            />
           </div>
-
 
           <div class="updatable-field-div">
             <label for="">Estado:</label>
             <select
-            name="state-select"
-            id="state-select"
-            [(ngModel)]="selectedStateToUpdate"
+              name="state-select"
+              id="state-select"
+              [(ngModel)]="selectedStateToUpdate"
             >
-              <option
-              *ngFor="let status of statusList"
-              [value]="status">
-              {{ status }}
-            </option>
+              <option *ngFor="let status of statusList" [value]="status">
+                {{ status }}
+              </option>
             </select>
           </div>
 
           <div class="updatable-field-div">
             <label for="">Prioridad:</label>
             <select
-            name="state-select"
-            id="state-select"
-            [(ngModel)]="selectedPriorityToUpdate"
+              name="state-select"
+              id="state-select"
+              [(ngModel)]="selectedPriorityToUpdate"
             >
-              <option
-              *ngFor="let priority of priorityList"
-              [value]="priority">
-              {{ priority }}
-            </option>
+              <option *ngFor="let priority of priorityList" [value]="priority">
+                {{ priority }}
+              </option>
             </select>
           </div>
 
-
-          <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
-            <button
-            class="update-btn-ticket"
-            (click)="updateTicket()">Actualizar</button>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+            "
+          >
+            <button class="update-btn-ticket" (click)="updateTicket()">
+              Actualizar
+            </button>
           </div>
         </div>
-       </div>
+      </app-collapsible>
 
-       <div style="width: 100; height: 5vh;"></div>
-  </div>
-
-
-
-  <ng-template #noDataTemplate>
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-around; height: 100%;">
-      <img src="assets/images/urbancheck.png" alt="Logo urbancheck">
-      <p>Seleccione un reclamo para ver sus datos...</p>
+      <div style="width: 100; height: 10vh"></div>
     </div>
-  </ng-template>
 
-</ng-template>
+    <ng-template #noDataTemplate>
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-around;
+          height: 100%;
+        "
+      >
+        <img src="assets/images/urbancheck.png" alt="Logo urbancheck" />
+        <p>Seleccione un reclamo para ver sus datos...</p>
+      </div>
+    </ng-template>
+  </ng-template>
 </div>

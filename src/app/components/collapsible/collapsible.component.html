@@ -1,0 +1,12 @@
+<div class="collapsible">
+  <div class="header" (click)="toggle()">
+    <span>{{ title }}</span>
+    <span class="indicator">
+      {{ isOpen ? "▲" : "▼" }}
+    </span>
+  </div>
+
+  <div class="content" [class.open]="isOpen">
+    <ng-content></ng-content>
+  </div>
+</div>
