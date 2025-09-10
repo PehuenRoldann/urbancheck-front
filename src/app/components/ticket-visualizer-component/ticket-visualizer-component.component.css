@@ -177,6 +177,13 @@ textarea {
   width: 100%;
 }
 
+.updatable-field-div label{
+  width: 25%;
+}
+
+.updatable-field-div select{
+  width: 60% !important;
+}
 
 .history-item {
   display: grid;
@@ -236,3 +243,30 @@ textarea {
   color: white;
   /* opcional */
 }
+
+.subscribe-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0px;
+}
+
+
+.subscribe-button-container button {
+  width: 30%;
+  height: 3vh;
+  font-size: 14pt;
+  border: none;
+  cursor: pointer;
+}
+
+.subscribe-button-container .subscribe-btn {
+  background-color: #67af69; /* Verde */
+  color: rgb(40, 100, 25);
+}
+
+.subscribe-button-container .unsubscriebe-btn {
+  background-color: #df6a6a;
+  color: rgb(143, 24, 24);
+}
+

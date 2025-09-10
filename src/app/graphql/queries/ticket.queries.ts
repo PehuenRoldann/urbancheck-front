@@ -1,4 +1,4 @@
-import { gql } from "graphql-request";
+import { gql } from 'graphql-request';
 
 export class TicketQueries {
   static readonly Ticket = gql`
@@ -28,6 +28,11 @@ export class TicketQueries {
           status_history {
             id
             author_id
+          }
+          author {
+            id
+            last_name
+            first_name
           }
         }
       }

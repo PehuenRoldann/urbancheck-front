@@ -11,20 +11,29 @@ import {
 } from '@app/interfaces/map.service.interface';
 import { Ticket } from '@app/interfaces/ticket.interface';
 import { TicketSatusService } from '@app/services/ticket-satus.service';
-import { TicketStatus } from '@app/interfaces/ticket_status.interface';
 
 import { Priorities, Statuses, RolesMap } from '@app/utils/consts';
 import { findKeyByValue, formatForDateInput } from '@app/utils/utils';
 import { StatusHistory } from '@app/interfaces/status_history.interface';
 import { IssuesService } from '@app/services/issues.service';
 import { Issue } from '@app/interfaces/issue.interface';
+import { Subscription } from '@app/interfaces/subscription.interface';
+import { SubscriptionsService } from '@app/services/subscriptions.service';
+import { User } from '@app/interfaces/user.interface';
 @Component({
   selector: 'app-ticket-visualizer-component',
   templateUrl: './ticket-visualizer-component.component.html',
   styleUrls: ['./ticket-visualizer-component.component.css'],
 })
 export class TicketVisualizerComponentComponent implements OnDestroy {
+  unSubscribeToTicket() {
+    throw new Error('Method not implemented.');
+  }
+  subscribeToTicket() {
+    throw new Error('Method not implemented.');
+  }
   @Input() userRoleId: number | null = null;
+  @Input() user: User | null = null;
 
   private _ticketId: string | null = null;
   selectedStateToUpdate: any;
@@ -34,6 +43,7 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
 
   statusHistory: StatusHistory[] = [];
   issuesList: Issue[] = [];
+  userSubscriptions: Subscription[] = [];
 
   @Input()
   set ticketId(value: string | null) {
@@ -42,17 +52,25 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
 
     if (value) {
       // Arranca el loading y pedí los datos del ticket
-      this.isLoading = true;
       this.isAddressLoaded = false;
       this.isHistoryLoaded = false;
+      this.isTicketDataLoaded = false;
+      this.isSubscriptionsLoaded = false;
       this.ticketData = null;
       this.address = 'No encontrado';
       this.ticketDataService.UpdateTicketData(value);
       this.ticketSatusService.UpdateStatusHistoryByTicketId(value);
+      this.subscriptionsService.UpdateUserSubscriptions(true);
+      this.issuesService.updateIssuesData();
     }
   }
+
   get ticketId() {
     return this._ticketId;
+  }
+
+  get isCitizen(): boolean {
+    return this.userRoleId === 2; // 2 es el ID de "Ciudadano"
   }
 
   get rolesMap() {
@@ -87,11 +105,47 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
     return this.ticketData?.issue?.description;
   }
 
+  get isSubscribedToCurrentTicket(): boolean {
+    if (!this.ticketData) return false;
+    return this.userSubscriptions.some(
+      (sub) => sub.ticket?.id === this.ticketData?.id && sub.dts == null
+    );
+  }
+
+  get canSubscribeToCurrentTicket(): boolean {
+    return this.isCitizen && this.isSubscribedToCurrentTicket === false;
+  }
+
+  get canUnsubscribeToCurrentTicket(): boolean {
+    return (
+      this.isCitizen &&
+      this.isSubscribedToCurrentTicket === true &&
+      !this.isAuthorOfCurrentTicket
+    );
+  }
+
+  get isAuthorOfCurrentTicket(): boolean {
+    if (!this.ticketData) return false;
+    return this.ticketData.author?.id === this.user?.id; // 2 es el ID de "Ciudadano"
+  }
+
   public ticketData: Ticket | null = null;
   address: string = 'No encontrado';
-  isLoading = true;
+  isTicketDataLoaded = false;
   isAddressLoaded = false;
   isHistoryLoaded = false;
+  isSubscriptionsLoaded = false;
+  isIssuesLoaded = false;
+
+  get isLoading(): boolean {
+    return this.isAddressLoaded &&
+      this.isHistoryLoaded &&
+      this.isTicketDataLoaded &&
+      this.isSubscriptionsLoaded &&
+      this.isIssuesLoaded
+      ? false
+      : true;
+  }
 
   private destroy$ = new Subject<void>();
 
@@ -110,12 +164,21 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
     @Inject(MAP_SERVICE_INTERFACE_TOKEN)
     private mapService: MapServiceInterface,
     private ticketSatusService: TicketSatusService,
-    private issuesService: IssuesService
+    private issuesService: IssuesService,
+    private subscriptionsService: SubscriptionsService
   ) {
     this.issuesService.issuesList$
       .pipe(takeUntil(this.destroy$))
       .subscribe((issues) => {
         this.issuesList = issues;
+        this.isIssuesLoaded = true;
+      });
+
+    this.subscriptionsService.userSubscriptions$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((subs) => {
+        this.userSubscriptions = subs;
+        this.isSubscriptionsLoaded = true;
       });
 
     // 1) Escuchá el ticket
@@ -130,7 +193,11 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
           } else {
             this.address = 'No encontrado';
             // si no hay coords, ya podemos apagar el loading
-            this.isLoading = false;
+            this.isTicketDataLoaded = false;
+          }
+
+          if (td) {
+            this.isTicketDataLoaded = true; // ⚡ cuando hay datos del ticket
           }
         }),
         // 2) Luego esperá la dirección
@@ -143,7 +210,7 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
         takeUntil(this.destroy$),
         catchError((err) => {
           console.error('Error obteniendo datos:', err);
-          this.isLoading = false;
+          this.isTicketDataLoaded = false;
           return EMPTY;
         })
       )
@@ -154,6 +221,7 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
         this.selectedScheduledDate = this.currentScheduledDate;
         this.selectedIssue = this.currentIssue;
         this.isAddressLoaded = true;
+        this.isTicketDataLoaded = true;
       });
 
     this.ticketSatusService.statusHistory$

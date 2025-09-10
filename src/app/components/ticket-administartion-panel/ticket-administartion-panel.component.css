@@ -58,19 +58,13 @@
 
 .ticket-admin-panel-nav-btn {
 
-    padding: 8px 12px 8px 12px;
     border-radius: 5px;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 
 }
 
-.ticket-admin-panel-nav-btn:hover {
-
-    background-color: #4b5c67fb;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-
-}
 
 .ticket-admin-panel-nav-btn img{
 

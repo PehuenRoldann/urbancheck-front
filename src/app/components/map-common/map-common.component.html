@@ -67,6 +67,7 @@
       [userRoleId]="(userData?.role)!.id"
       (closePanel)="showSidePanel = false"
       (ticketUpdated)="onTicketUpdated($event)"
+      [user]="userData"
     ></app-ticket-visualizer-component>
   </app-side-panel>
 </div>
