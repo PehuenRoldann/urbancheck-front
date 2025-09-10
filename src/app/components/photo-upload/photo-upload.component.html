@@ -1,15 +1,15 @@
 <div
-  class="mb-3 border border-primary rounded p-3 text-center bg-light"
+  class="uploader-root"
   (click)="openFileDialog($event)"
   role="button"
   tabindex="0"
 >
   <ngx-file-drop
+    style="opacity: 0"
     [dropZoneLabel]="'Arrastrá imágenes o hacé clic para seleccionar'"
     (onFileDrop)="dropped($event)"
-    [dropZoneClassName]="'w-100 h-100'"
-  >
-  </ngx-file-drop>
+    [dropZoneClassName]="'uploader-dropzone'"
+  ></ngx-file-drop>
 
   <input
     #fileInput

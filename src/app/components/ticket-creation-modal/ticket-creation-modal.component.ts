@@ -5,26 +5,26 @@ import {
   EventEmitter,
   Inject,
   OnInit,
-} from "@angular/core";
-import { ErrorResponse } from "@app/interfaces/error_response.interface";
-import { Issue } from "@app/interfaces/issue.interface";
-import { IssuesService } from "@app/services/issues.service";
-import { PhotoManagerService } from "@app/services/photo-manager.service";
-import { UserService } from "@app/services/user.service";
-import { delay } from "rxjs";
+} from '@angular/core';
+import { ErrorResponse } from '@app/interfaces/error_response.interface';
+import { Issue } from '@app/interfaces/issue.interface';
+import { IssuesService } from '@app/services/issues.service';
+import { PhotoManagerService } from '@app/services/photo-manager.service';
+import { UserService } from '@app/services/user.service';
+import { delay } from 'rxjs';
 import {
   MAP_SERVICE_INTERFACE_TOKEN,
   MapServiceInterface,
-} from "src/app/interfaces/map.service.interface";
+} from 'src/app/interfaces/map.service.interface';
 import {
   TICKET_SERVICE_INTERFACE_TOKEN,
   TicketServiceInterface,
-} from "src/app/interfaces/ticket.service.interface";
+} from 'src/app/interfaces/ticket.service.interface';
 import MunicipalIssues, {
   DEPENDENCIES_MAP_IDS,
   getDependencyId,
-} from "src/app/models/municipalDependencie";
-import { Ticket } from "src/app/models/ticket";
+} from 'src/app/models/municipalDependencie';
+import { Ticket } from 'src/app/models/ticket';
 
 interface CreateTicketInputInterface {
   description: string;
@@ -34,7 +34,6 @@ interface CreateTicketInputInterface {
   imageUrl: string | null;
   statusId: number | null;
   priorityId: number | null;
-
 }
 
 @Component({
@@ -84,6 +83,7 @@ export class TicketCreationModalComponent implements OnInit {
   public maxSizeMB = 200; // opcional
 
   public cancelCreation = new EventEmitter();
+  searchTerm: string = '';
 
   constructor(
     @Inject(TICKET_SERVICE_INTERFACE_TOKEN)
@@ -127,7 +127,6 @@ export class TicketCreationModalComponent implements OnInit {
     const longitud = this.ticketCreationInput.longitude;
     const latitud = this.ticketCreationInput.latitude;
 
-
     let ticketImgUrl: string = '';
 
     try {
@@ -143,7 +142,6 @@ export class TicketCreationModalComponent implements OnInit {
         ticketImgUrl = await this.photoManager.uploadImage(photo, userData.id);
       }
 
-
       delay(4000); // DEBUG
 
       const result = await this.ticketService.AddTicket(
@@ -155,9 +153,13 @@ export class TicketCreationModalComponent implements OnInit {
       );
 
       if ('id' in result && 'timestamp' in result) {
-        this.res.exito = '¡Éxito!';
-        this.res.mensaje = 'Ticket creado exitosamente!';
-        this.res.src = 'assets/images/like-svgrepo-com.svg';
+        this.res.exito = '¡Reclamo registrado exitosamente!';
+        this.res.mensaje =
+          'Su reclamo se registró correctamente. ' +
+          '\n Será validado por un operador de la municipalidad' +
+          ' y se le notificará cualquier actualización.';
+
+        this.res.src = 'assets/images/urbancheck.png';
 
         this.ticketCreated.emit({
           success: true,

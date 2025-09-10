@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { Ticket } from '@app/models/ticket';
 import { TicketStates } from 'src/app/models/ticketStates';
 
 @Component({

@@ -29,6 +29,14 @@
     "
   >
     <div *ngIf="ticketData; else noDataTemplate" class="ticket-data-container">
+      <!-- Título -->
+      <div style="width: 100%; text-align: center; margin-bottom: 40px">
+        <h4>
+          {{ ticketData.issue?.description ?? "Sin problema disponible" }}
+        </h4>
+      </div>
+
+      <!-- Datos principales -->
       <div class="flex-row-centered-container">
         <div class="grid-container">
           <div class="grid-item header">Creado por</div>
@@ -176,6 +184,22 @@
             >
               <option *ngFor="let priority of priorityList" [value]="priority">
                 {{ priority }}
+              </option>
+            </select>
+          </div>
+
+          <div class="updatable-field-div">
+            <label for="">Problemática:</label>
+            <select
+              name="state-select"
+              id="state-select"
+              [(ngModel)]="selectedIssue"
+            >
+              <option
+                *ngFor="let issue of issuesList"
+                [value]="issue.description"
+              >
+                {{ issue.description }}
               </option>
             </select>
           </div>

@@ -46,11 +46,31 @@
   max-height: auto;
 }
 
+.creation-ticket-modal-footer {
+  --bg-color-1: #4c5c68e5;
+  --bg-color-2: #6e7f8bec;
+  background-color: var(--bg-color-1);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 7vh;
+}
+
+.custom-btn-primary {
+  background-color: var(--bg-color-2);
+  color: white;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
 
 @media screen and (min-width: 768px) {
-  
+
   #nav-bar {
-    
+
     width: 40%;
     height: 7vh;
   }

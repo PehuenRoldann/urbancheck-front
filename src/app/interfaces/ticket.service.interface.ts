@@ -1,9 +1,9 @@
-import { Observable } from "rxjs";
-import { MarkerData } from "../models/markerData";
-import { Ticket } from "./ticket.interface";
-import { InjectionToken } from "@angular/core";
-import { ErrorResponse } from "./error_response.interface";
-import { TicketFilterInput } from "@app/graphql/types/ticket.types";
+import { Observable } from 'rxjs';
+import { MarkerData } from '../models/markerData';
+import { Ticket } from './ticket.interface';
+import { InjectionToken } from '@angular/core';
+import { ErrorResponse } from './error_response.interface';
+import { TicketFilterInput } from '@app/graphql/types/ticket.types';
 
 export interface TicketServiceInterface {
   //GetMarkers(): Promise<MarkerData[]>;
@@ -19,7 +19,7 @@ export interface TicketServiceInterface {
     issueId: number,
     longitud: number,
     latitud: number,
-    ticketImgUrl: string,
+    ticketImgUrl: string
   ): Promise<Ticket | ErrorResponse>;
   /**Actualiza el observable con los marcadores.*/
   UpdateMarkersData(): void;
@@ -33,9 +33,10 @@ export interface TicketServiceInterface {
     scheduledResolutionAt: Date | null,
     statusId: number | null,
     priorityId: number | null,
+    issueId: number | null
   ): Promise<Ticket | ErrorResponse>;
 }
 
 // Crea el token de inyección
 export const TICKET_SERVICE_INTERFACE_TOKEN =
-  new InjectionToken<TicketServiceInterface>("ITicketDataService");
+  new InjectionToken<TicketServiceInterface>('ITicketDataService');

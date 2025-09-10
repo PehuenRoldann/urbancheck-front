@@ -1,31 +1,33 @@
-import { Injectable } from "@angular/core";
-import { GraphQLClient } from "graphql-request";
-import { TicketMutations } from "@app/graphql/mutations/ticket.mutations";
-import { Ticket } from "@app/interfaces/ticket.interface";
-import { KeycloakService } from "keycloak-angular";
-import { MarkerData } from "@app/models/markerData";
-import { BehaviorSubject, delay, Observable } from "rxjs";
-import { ErrorResponse } from "@app/interfaces/error_response.interface";
-import { TicketQueries } from "@app/graphql/queries/ticket.queries";
-import { TicketServiceInterface } from "@app/interfaces/ticket.service.interface";
-import { User } from "@app/interfaces/user.interface";
-import { UserQueries } from "@app/graphql/queries/user.queries";
-import { TicketFilterInput, TicketResult } from "@app/graphql/types/ticket.types";
-import { UserResponse } from "@app/graphql/types/user.types";
-import { StatusHistory } from "@app/interfaces/status_history.interface";
-import { environment } from "src/environments/environment";
-import { sleep } from "@app/utils/utils";
+import { Injectable } from '@angular/core';
+import { GraphQLClient } from 'graphql-request';
+import { TicketMutations } from '@app/graphql/mutations/ticket.mutations';
+import { Ticket } from '@app/interfaces/ticket.interface';
+import { KeycloakService } from 'keycloak-angular';
+import { MarkerData } from '@app/models/markerData';
+import { BehaviorSubject, delay, Observable } from 'rxjs';
+import { ErrorResponse } from '@app/interfaces/error_response.interface';
+import { TicketQueries } from '@app/graphql/queries/ticket.queries';
+import { TicketServiceInterface } from '@app/interfaces/ticket.service.interface';
+import { User } from '@app/interfaces/user.interface';
+import { UserQueries } from '@app/graphql/queries/user.queries';
+import {
+  TicketFilterInput,
+  TicketResult,
+} from '@app/graphql/types/ticket.types';
+import { UserResponse } from '@app/graphql/types/user.types';
+import { StatusHistory } from '@app/interfaces/status_history.interface';
+import { environment } from 'src/environments/environment';
+import { sleep } from '@app/utils/utils';
 
 interface CreateTicketInput {
   description: string;
-	latitude: number;
+  latitude: number;
   longitude: number;
-	statusId: number;
-	priorityId: number;
-	issueId: number;
-	imageUrl: string | null;
+  statusId: number;
+  priorityId: number;
+  issueId: number;
+  imageUrl: string | null;
 }
-
 
 interface UpdateTicketInput {
   id: string;
@@ -38,8 +40,6 @@ interface UpdateTicketInput {
   imageUrl?: string | null;
   scheduledResolutionAt?: Date | null;
 }
-
-
 
 @Injectable({ providedIn: 'root' })
 export class TicketService implements TicketServiceInterface {
@@ -75,7 +75,8 @@ export class TicketService implements TicketServiceInterface {
   async UpdateCurrentTicketWithNewInfo(
     scheduledResolutionAt: Date | null,
     statusId: number | null,
-    priorityId: number | null
+    priorityId: number | null,
+    issueId: number | null
   ): Promise<Ticket | ErrorResponse> {
     const client = await this.generateGqlClient();
 
@@ -89,6 +90,7 @@ export class TicketService implements TicketServiceInterface {
       scheduledResolutionAt: scheduledResolutionAt ?? null,
       statusId: statusId ?? undefined,
       priorityId: priorityId ?? undefined,
+      issueId: Number(issueId?.toString()) ?? undefined,
     };
 
     const variables = { updateTicketInput: input };
@@ -97,15 +99,13 @@ export class TicketService implements TicketServiceInterface {
       const response = await client.request<{ updateTicket: Ticket }>(
         TicketMutations.UPDATE_TICKET,
         variables
-     );
-     this.UpdateTicketData(currentTicket.id); // Refresca los datos del ticket actual
-     return response.updateTicket;
-    }
-    catch (error) {
+      );
+      this.UpdateTicketData(currentTicket.id); // Refresca los datos del ticket actual
+      return response.updateTicket;
+    } catch (error) {
       console.error('Error al actualizar el ticket:', error);
       return { message: 'Error al actualizar el ticket' } as ErrorResponse;
-     }
-
+    }
   }
 
   async AddTicket(
@@ -133,7 +133,6 @@ export class TicketService implements TicketServiceInterface {
       TicketMutations.CREATE_TICKET,
       variables
     );
-
 
     const result = response.createTicket;
 

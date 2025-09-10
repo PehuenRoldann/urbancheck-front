@@ -1,126 +1,190 @@
 <!-- Modal -->
 <div
-    class="modal fade"
-    [id]="modalId"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="myModalLabel"
-    aria-hidden="true"
+  class="modal fade"
+  [id]="modalId"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
 >
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="btn header-btn"
-                [ngStyle]="{visibility: (processStep > 0) ? 'visible' : 'hidden'}"
-                (click)="prevStep()">
-                &lt;
-              </button>
-                <img src="assets/images/megaphone.svg" alt="imagen megafono"/>
-              <button type="button" class="btn header-btn" data-bs-dismiss="modal"
-              (click)="CancelTicket()">
-                X
-              </button>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn header-btn"
+          [ngStyle]="{ visibility: processStep > 0 ? 'visible' : 'hidden' }"
+          (click)="prevStep()"
+        >
+          &lt;
+        </button>
+        <img src="assets/images/megaphone.svg" alt="imagen megafono" />
+        <button
+          type="button"
+          class="btn header-btn"
+          data-bs-dismiss="modal"
+          (click)="CancelTicket()"
+        >
+          X
+        </button>
+      </div>
+      <div class="modal-body modal-body-scroll">
+        <!-- Changes the modal content to match the step in the process -->
+        <div [ngSwitch]="processStep" id="modalSwitch">
+          <!-- Selección de problemática -->
+          <div id="dependencySelectionDiv" *ngSwitchCase="0">
+            <!-- Input de búsqueda -->
+            <input
+              type="text"
+              class="form-control mb-2"
+              placeholder="Buscar problemática para reportar..."
+              [(ngModel)]="searchTerm"
+            />
+
+            <!-- Lista filtrada -->
+            <div style="width: 100%; height: 100%">
+              <div
+                class="form-check"
+                *ngFor="let issue of issuesList | filterIssues : searchTerm"
+              >
+                <label class="form-check-label">
+                  {{ issue.description }}
+                </label>
+
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  (click)="setIssue(issue)"
+                />
+              </div>
             </div>
-            <div class="modal-body modal-body-scroll">
+          </div>
 
-              <!-- Changes the modal content to match the step in the process -->
-              <div [ngSwitch]="processStep" id="modalSwitch">
-
-                <div id="dependencySelectionDiv" *ngSwitchCase="0">
-
-                  <div class="form-check" *ngFor="let issue of issuesList">
-                    <label class="form-check-label" for="flexRadioDefault1">
-                      {{issue.description}}
-                    </label>
-
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
-                      (click)="setIssue(issue)">
-                  </div>
-                </div>
-
-
-                <div id="descriptionDiv" *ngSwitchCase="1">
-                  <label for="descriptionInput">Descripción</label>
-                  <textarea
-                      id="descriptionInput"
-                      class="description-box"
-                      [maxLength]="maxLengthDesc"
-                      [(ngModel)]="ticketCreationInput .description">
-                  </textarea>
-                  <p class="warning-p-descripton"
-                  [ngStyle]="{visibility: ticketCreationInput.description.length < 20 ? 'visible' : 'hidden'}"
-                  >* Al menos 20 caracteres...</p>
-                  <div class="photo-uploader-component-container">
-                    <app-photo-upload
-                      [accept]="'image/*'"
-                      [multiple]="true"
-                      [capture]="'environment'"
-                      (filesSelected)="onFilesSelected($event)"
-                      *ngIf="previewUrls.length < maxFiles"
-                    ></app-photo-upload>
-
-                    <div *ngIf="previewUrls.length">
-                      <div class="flex-preview-image-container" *ngFor="let src of previewUrls; let i = index">
-                          <img [src]="src" alt="preview image" class="img-preview">
-                          <button class="photo-upoad-remove-btn" (click)="removeAt(i)">Eliminar</button>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
-                <div id="ticketSumaryDiv" *ngSwitchCase="2">
-
-                  <label>Problemática</label>
-                  <p>{{selectedIssue?.description}}</p>
-
-                  <label for="descriptionInput">Descripción</label>
-                  <div class="ticket-summary-description-div">
-                    {{ticketCreationInput.description}}
-                  </div>
-
-                  <div class="ticket-summary-img-div" *ngIf="previewUrls.length > 0">
-                    <label for="sumaryImagen">Foto</label>
-                    <img [src]="previewUrls[0]" alt="" class="img-preview">
-                  </div>
-
-                </div>
-
-                <div class="result-div" *ngSwitchCase="3">
-
-                  <h5>{{res.exito}}</h5>
-                  <h6>{{res.mensaje}}</h6>
-                  <img [src]="res.src" alt="resultado imagen">
-
-                </div>
-
+          <!-- Descripción del problema -->
+          <div id="descriptionDiv" *ngSwitchCase="1">
+            <label for="descriptionInput">Descripción</label>
+            <textarea
+              id="descriptionInput"
+              class="description-box"
+              [maxLength]="maxLengthDesc"
+              [(ngModel)]="ticketCreationInput.description"
+              placeholder="Describa el problema con al menos 20 caracteres..."
+            >
+            </textarea>
+            <p
+              class="warning-p-descripton"
+              [ngStyle]="{
+                visibility:
+                  ticketCreationInput.description.length < 20
+                    ? 'visible'
+                    : 'hidden'
+              }"
+            >
+              * Al menos 20 caracteres...
+            </p>
+            <div class="photo-uploader-component-container">
+              <div
+                class="photo-uploader-component-container-div"
+                *ngIf="
+                  previewUrls.length < maxFiles;
+                  else previewImagesTemplate
+                "
+              >
+                <app-photo-upload
+                  [accept]="'image/*'"
+                  [multiple]="true"
+                  [capture]="'environment'"
+                  (filesSelected)="onFilesSelected($event)"
+                ></app-photo-upload>
               </div>
 
+              <ng-template #previewImagesTemplate>
+                <div
+                  class="flex-preview-image-container"
+                  *ngFor="let src of previewUrls; let i = index"
+                >
+                  <img [src]="src" alt="preview image" class="img-preview" />
+                  <div class="remove-img-btn-container">
+                    <button
+                      class="photo-upoad-remove-btn"
+                      (click)="removeAt(i)"
+                    >
+                      X
+                    </button>
+                  </div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+
+          <!-- Resumen del ticket -->
+          <div id="ticketSumaryDiv" *ngSwitchCase="2">
+            <label>Problemática</label>
+            <div class="issue-summary-div summary-border-box">
+              <p>{{ selectedIssue?.description }}</p>
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!CanContinue()"
-                [ngStyle]="{display: (processStep >= 0 && processStep < 2) ? 'block' : 'none'}">
-                    Continuar
-                </button>
-                <button type="button" class="btn btn-primary"
-                [ngStyle]="{display: (processStep === 2) ? 'block' : 'none'}"
-                (click)="AddTicket()"
-                >
-                    Confirmar
-                </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                (click)="CancelTicket()"
-                [ngStyle]="{display: (processStep === 2) ? 'block' : 'none'}">
-                    Cancelar
-                </button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                [ngStyle]="{display: (processStep === 3) ? 'block' : 'none'}"
-                (click)="CancelTicket()"
-                >
-                    Cerrar
-                </button>
+            <label for="descriptionInput">Descripción</label>
+            <div
+              class="description-box description-box-readonly summary-border-box"
+            >
+              {{ ticketCreationInput.description }}
             </div>
+
+            <div
+              class="flex-preview-image-container"
+              *ngIf="previewUrls.length > 0"
+            >
+              <label for="sumaryImagen">Foto</label>
+              <img
+                [src]="previewUrls[0]"
+                alt=""
+                class="img-preview summary-border-box"
+              />
+              <span style="width: 100%; height: 30px"></span>
+            </div>
+          </div>
+
+          <!-- Resultado de la creación del ticket -->
+          <div class="result-div" *ngSwitchCase="3">
+            <h4 style="width: 100%; text-align: center">{{ res.exito }}</h4>
+            <img id="result-image" [src]="res.src" alt="resultado imagen" />
+            <h5 style="width: 100%; text-align: center">{{ res.mensaje }}</h5>
+          </div>
         </div>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="custom-primary-btn"
+          (click)="nextStep()"
+          [disabled]="!CanContinue()"
+          [ngStyle]="{
+            display: processStep >= 0 && processStep < 2 ? 'block' : 'none'
+          }"
+        >
+          Continuar
+        </button>
+        <button
+          type="button"
+          class="custom-primary-btn"
+          [ngStyle]="{ display: processStep === 2 ? 'block' : 'none' }"
+          (click)="AddTicket()"
+        >
+          Confirmar
+        </button>
+        <button
+          type="button"
+          class="custom-primary-btn"
+          data-bs-dismiss="modal"
+          [ngStyle]="{ display: processStep === 3 ? 'block' : 'none' }"
+          (click)="CancelTicket()"
+        >
+          Cerrar
+        </button>
+      </div>
     </div>
+  </div>
 </div>

@@ -5,12 +5,19 @@
 }
 
 .modal-content{
-  background-color: #6e7f8bec;
+  background-color: #4b5c6c;
   height: 65dvh;
 }
 
 .modal-body{
   height: 100%;
+
+  --bg-color1: #6c7d89;
+  --bg-color2: #4b5c6c;
+  --bg-color3: #e7f0f8;
+  --rojo-pastel: #e96d6d;
+  --font-color1: whitesmoke;
+  --width-divs: 90%;
   /* background-color: red; */
 
   & #modalSwitch {
@@ -24,6 +31,12 @@
 
 .modal-header,
 .modal-footer {
+  --bg-color1: #6c7d89;
+  --bg-color2: #4b5c6c;
+  --bg-color3: #e7f0f8;
+  --rojo-pastel: #e96d6d;
+  --font-color1: whitesmoke;
+  --width-divs: 90%;
   position: sticky;
   top: 0;
   /* Para el header */
@@ -34,17 +47,17 @@
   /* Fondo para evitar que el scroll pase por encima */
 }
 
-/* .dependencySelectionDiv{
-  overflow-y: hidden;
-} */
+.dependencySelectionDiv{
+
+}
 
 .form-check {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-
   border-bottom: 1px solid white;
+  margin-bottom: 15px;
 }
 
 .form-check > label {
@@ -103,32 +116,53 @@
 
 .photo-uploader-component-container {
   margin-top: 3px;
-  height: 40vh;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.photo-uploader-component-container-div {
+  width: var(--width-divs);
+  height: 100%;
+
 }
 
 .flex-preview-image-container {
+  margin-top: 3px;
+  height: 100%;
+  width: 90%;
   display: flex;
+  justify-content: center;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 
 }
 
 .img-preview {
-  max-width: 80%;
-  max-height: 50%;
+  height: auto;
+  min-width: 100%;
+  max-width: 100%;
+  width: auto;
   object-fit: cover;
   overflow: auto;
 }
 
 .photo-upoad-remove-btn {
-
-  border: 1px solid red;
-  color: red;
-  font-size: 14pt;
+  border: 0px;
+  color: rgb(126, 3, 3);
+  font-size: 12pt;
+  font-weight: bold;
   padding: 5px 10px;
   width: fit-content;
-  background-color: rgba(rgb(63, 63, 63), rgb(255, 255, 255), rgb(255, 255, 255), 100);
+  background-color: var(--rojo-pastel);
+}
+
+
+.remove-img-btn-container{
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .img-btn {
@@ -153,8 +187,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  overflow: scroll;
+  justify-content: space-around;
 
   & label {
 
@@ -203,11 +236,14 @@
 }
 
 .description-box {
+  margin-top: 10px;
   width: 90%;
-  height: 10vh;
-  padding: 5px 5px;
+  min-height: 10vh;
+  padding: 5px 15px;
   border: 1px white solid;
-  border-radius: 15px;
+
+  color: var(--font-color1);
+  background-color: var(--bg-color2);
   text-align: left; /* Cambia a 'left' para texto alineado natural */
 
   white-space: pre-wrap; /* Ajusta el texto a la siguiente línea */
@@ -216,6 +252,26 @@
 
   overflow-y: auto; /* Muestra un scroll solo vertical si es necesario */
   overflow-x: hidden; /* Oculta el scroll horizontal */
+}
+
+.custom-primary-btn {
+  background-color: var(--bg-color2);
+  border: 2px solid var(--bg-color3);
+  color: var(--font-color1);
+  font-weight: bold;
+  padding: 5px 15px;
+}
+
+.custom-primary-btn:hover {
+  background-color: var(--bg-color3);
+}
+
+.description-box-readonly {
+  resize: none; /* Evita que el usuario pueda redimensionar el área de texto */
+  border: none; /* Elimina el borde para un aspecto más limpio */
+  outline: none; /* Elimina el contorno al hacer clic */
+  cursor: default; /* Cambia el cursor para indicar que no es editable */
+  min-height: fit-content; /* Ajusta el alto automáticamente al contenido */
 }
 
 .result-div {
@@ -233,4 +289,26 @@
     height: 40%;
     aspect-ratio: 1/1;
   }
+}
+
+.issue-summary-div {
+  width: 90%;
+  padding: 5px;
+  text-align: center;
+  background-color: var(--bg-color2);
+  color: var(--font-color1);
+  font-weight: semi-bold;
+  font-size: 12pt;
+}
+
+
+.summary-border-box {
+  border: 1px solid var(--bg-color1);
+
+}
+
+#result-image {
+  height: 40%;
+  aspect-ratio: 1/1;
+  border: 0px;
 }

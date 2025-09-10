@@ -16,6 +16,8 @@ import { TicketStatus } from '@app/interfaces/ticket_status.interface';
 import { Priorities, Statuses, RolesMap } from '@app/utils/consts';
 import { findKeyByValue, formatForDateInput } from '@app/utils/utils';
 import { StatusHistory } from '@app/interfaces/status_history.interface';
+import { IssuesService } from '@app/services/issues.service';
+import { Issue } from '@app/interfaces/issue.interface';
 @Component({
   selector: 'app-ticket-visualizer-component',
   templateUrl: './ticket-visualizer-component.component.html',
@@ -28,8 +30,10 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
   selectedStateToUpdate: any;
   selectedPriorityToUpdate: any;
   selectedScheduledDate: any;
+  selectedIssue: any;
 
   statusHistory: StatusHistory[] = [];
+  issuesList: Issue[] = [];
 
   @Input()
   set ticketId(value: string | null) {
@@ -79,6 +83,10 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
     );
   }
 
+  get currentIssue(): string | undefined {
+    return this.ticketData?.issue?.description;
+  }
+
   public ticketData: Ticket | null = null;
   address: string = 'No encontrado';
   isLoading = true;
@@ -101,8 +109,15 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
     private ticketDataService: TicketServiceInterface,
     @Inject(MAP_SERVICE_INTERFACE_TOKEN)
     private mapService: MapServiceInterface,
-    private ticketSatusService: TicketSatusService
+    private ticketSatusService: TicketSatusService,
+    private issuesService: IssuesService
   ) {
+    this.issuesService.issuesList$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((issues) => {
+        this.issuesList = issues;
+      });
+
     // 1) Escuchá el ticket
     this.ticketDataService.ticketData$
       .pipe(
@@ -137,6 +152,7 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
         this.selectedStateToUpdate = this.currentStatus;
         this.selectedPriorityToUpdate = this.currentPriority;
         this.selectedScheduledDate = this.currentScheduledDate;
+        this.selectedIssue = this.currentIssue;
         this.isAddressLoaded = true;
       });
 
@@ -146,6 +162,8 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
         this.statusHistory = sh;
         this.isHistoryLoaded = true;
       });
+
+    // Cuando estén cargados los datos y la dirección, apagá el loading
   }
 
   ngOnDestroy() {
@@ -179,10 +197,20 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
         ? null
         : findKeyByValue(Priorities, this.selectedPriorityToUpdate);
 
+    const issueId =
+      this.selectedIssue === this.currentIssue
+        ? null
+        : this.issuesList.find(
+            (issue) => issue.description === this.selectedIssue
+          )?.id ?? null;
+
+    console.log('IssueId seleccionado: ', issueId);
+
     this.ticketDataService.UpdateCurrentTicketWithNewInfo(
       date,
       statusId,
-      priorityId
+      priorityId,
+      issueId
     );
     this.ticketDataService.UpdateTicketData(this.ticketData!.id);
   }

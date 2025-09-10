@@ -1,12 +1,20 @@
-import { Component, OnInit, Inject, ViewChild } from "@angular/core";
-import { TicketServiceInterface, TICKET_SERVICE_INTERFACE_TOKEN } from "src/app/interfaces/ticket.service.interface";
-import { MapServiceInterface, MAP_SERVICE_INTERFACE_TOKEN } from "src/app/interfaces/map.service.interface";
+import { Component, OnInit, Inject, ViewChild, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import {
+  TicketServiceInterface,
+  TICKET_SERVICE_INTERFACE_TOKEN,
+} from 'src/app/interfaces/ticket.service.interface';
+import {
+  MapServiceInterface,
+  MAP_SERVICE_INTERFACE_TOKEN,
+} from 'src/app/interfaces/map.service.interface';
 
-import { TicketViewModalComponent } from "../ticket-view-modal/ticket-view-modal.component";
-import { MarkerData } from "src/app/models/markerData";
-import { User } from "@app/interfaces/user.interface";
-import { UserService } from "@app/services/user.service";
-import { Router } from "@angular/router";
+import { TicketViewModalComponent } from '../ticket-view-modal/ticket-view-modal.component';
+import { MarkerData } from 'src/app/models/markerData';
+import { User } from '@app/interfaces/user.interface';
+import { UserService } from '@app/services/user.service';
+import { Router } from '@angular/router';
 
 declare var bootstrap: any;
 
@@ -14,7 +22,7 @@ export const enum ModalIds {
   adminPanel,
   ticketCreationModal,
   ticketViewModal,
-  profileModal
+  profileModal,
 }
 
 @Component({
@@ -22,13 +30,15 @@ export const enum ModalIds {
   templateUrl: './map-common.component.html',
   styleUrls: ['./map-common.component.css'],
 })
-export class MapCommonComponent implements OnInit {
+export class MapCommonComponent implements OnInit, OnDestroy {
   public currentCoorsd: { lng: number; lat: number } = { lng: 0, lat: 0 };
   public mapStatus!: number;
   @ViewChild(TicketViewModalComponent)
   ticketViewModal!: TicketViewModalComponent;
   public markersData!: MarkerData[];
   public userData: User | null = null;
+
+  private destroy$ = new Subject<void>();
 
   public modalIds: Record<ModalIds, string> = {
     [ModalIds.adminPanel]: 'adminPanel',
@@ -57,34 +67,43 @@ export class MapCommonComponent implements OnInit {
 
     this.geoService.initializeMap('map');
 
-    this.geoService.lastCoords$.subscribe((coords) => {
-      if (coords.lng != 0 && coords.lat != 0) {
-        this.currentCoorsd = coords;
-        this.openModal('newTicketConfModal');
-      }
-    });
+    this.geoService.lastCoords$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((coords) => {
+        if (coords.lng != 0 && coords.lat != 0) {
+          this.currentCoorsd = coords;
+          this.openModal(this.modalIds[1]);
+        }
+      });
 
-    this.geoService.mapStatus$.subscribe((status) => {
-      this.mapStatus = status;
-    });
+    this.geoService.mapStatus$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((status) => {
+        this.mapStatus = status;
+      });
 
-    this.geoService.lastMarkerClickedSubject$.subscribe((markerData) => {
-      // this.openModal('ticketViewModal');
-      // this.ticketViewModal.GetTicketWithId(markerData.id);
+    this.geoService.lastMarkerClickedSubject$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((markerData) => {
+        if (markerData && markerData.id) {
+          this.selectedTicketId = markerData.id;
+          this.showSidePanel = true;
+        }
+      });
 
-      if (markerData && markerData.id) {
-        this.selectedTicketId = markerData.id;
-        this.showSidePanel = true;
-      }
-    });
-
-    this.ticketDataService.markersData$.subscribe((markerDataRes) => {
-      this.markersData = markerDataRes.length > 0 ? markerDataRes : [];
-
-      this.geoService.DrawMarkers(this.markersData);
-    });
+    this.ticketDataService.markersData$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((markerDataRes) => {
+        this.markersData = markerDataRes.length > 0 ? markerDataRes : [];
+        this.geoService.DrawMarkers(this.markersData);
+      });
 
     this.ticketDataService.UpdateMarkersData();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
@@ -96,7 +115,7 @@ export class MapCommonComponent implements OnInit {
     const modalElement = document.getElementById(modalID);
 
     if (modalElement) {
-      const modal = new bootstrap.Modal(modalElement); // Usa el servicio de Bootstrap para abrir el modal
+      const modal = new bootstrap.Modal(modalElement);
       modal.show();
     }
   }
@@ -123,10 +142,9 @@ export class MapCommonComponent implements OnInit {
 
     setTimeout(() => {
       alert.remove();
-    }, 5000); // La alerta desaparece después de 5 segundos
+    }, 5000);
   }
 
-  // Método para manejar el evento emitido por el modal
   onTicketCreated(result: any): void {
     this.ticketDataService.UpdateMarkersData();
   }
