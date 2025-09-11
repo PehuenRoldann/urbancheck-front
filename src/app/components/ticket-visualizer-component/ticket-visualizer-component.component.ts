@@ -26,12 +26,6 @@ import { User } from '@app/interfaces/user.interface';
   styleUrls: ['./ticket-visualizer-component.component.css'],
 })
 export class TicketVisualizerComponentComponent implements OnDestroy {
-  unSubscribeToTicket() {
-    throw new Error('Method not implemented.');
-  }
-  subscribeToTicket() {
-    throw new Error('Method not implemented.');
-  }
   @Input() userRoleId: number | null = null;
   @Input() user: User | null = null;
 
@@ -44,6 +38,7 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
   statusHistory: StatusHistory[] = [];
   issuesList: Issue[] = [];
   userSubscriptions: Subscription[] = [];
+  subscriptionActionLoading: boolean = false;
 
   @Input()
   set ticketId(value: string | null) {
@@ -113,14 +108,20 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
   }
 
   get canSubscribeToCurrentTicket(): boolean {
-    return this.isCitizen && this.isSubscribedToCurrentTicket === false;
+    return (
+      this.isCitizen &&
+      !this.isSubscribedToCurrentTicket &&
+      !this.isAuthorOfCurrentTicket &&
+      !this.subscriptionActionLoading
+    );
   }
 
   get canUnsubscribeToCurrentTicket(): boolean {
     return (
       this.isCitizen &&
-      this.isSubscribedToCurrentTicket === true &&
-      !this.isAuthorOfCurrentTicket
+      this.isSubscribedToCurrentTicket &&
+      !this.isAuthorOfCurrentTicket &&
+      !this.subscriptionActionLoading
     );
   }
 
@@ -272,8 +273,6 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
             (issue) => issue.description === this.selectedIssue
           )?.id ?? null;
 
-    console.log('IssueId seleccionado: ', issueId);
-
     this.ticketDataService.UpdateCurrentTicketWithNewInfo(
       date,
       statusId,
@@ -281,5 +280,41 @@ export class TicketVisualizerComponentComponent implements OnDestroy {
       issueId
     );
     this.ticketDataService.UpdateTicketData(this.ticketData!.id);
+  }
+
+  unSubscribeToTicket() {
+    if (!this.ticketData) return;
+
+    this.subscriptionActionLoading = true;
+
+    this.subscriptionsService
+      .UnsubscribeFromTicket(this.ticketData.id)
+      .then(({ code, message }) => {
+        if (code !== 200) {
+          alert(message);
+          this.subscriptionActionLoading = false;
+          return;
+        }
+        this.subscriptionsService.UpdateUserSubscriptions(true);
+        this.subscriptionActionLoading = false;
+      });
+  }
+
+  subscribeToTicket() {
+    if (!this.ticketData) return;
+
+    this.subscriptionActionLoading = true;
+
+    this.subscriptionsService
+      .SubscribeToTicket(this.ticketData.id)
+      .then(({ code, message }) => {
+        if (code !== 200) {
+          alert(message);
+          this.subscriptionActionLoading = false;
+          return;
+        }
+        this.subscriptionsService.UpdateUserSubscriptions(true);
+        this.subscriptionActionLoading = false;
+      });
   }
 }

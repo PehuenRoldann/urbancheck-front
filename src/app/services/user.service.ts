@@ -1,13 +1,13 @@
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { environment } from "src/environments/environment";
-import { KeycloakService } from "keycloak-angular";
-import { GraphQLClient } from "graphql-request";
-import { UserMutations } from "@app/graphql/mutations/users.mutations";
-import { User } from "@app/interfaces/user.interface";
-import { ErrorResponse } from "@app/interfaces/error_response.interface";
-import { UserQueries } from "@app/graphql/queries/user.queries";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { KeycloakService } from 'keycloak-angular';
+import { GraphQLClient } from 'graphql-request';
+import { UserMutations } from '@app/graphql/mutations/users.mutations';
+import { User } from '@app/interfaces/user.interface';
+import { ErrorResponse } from '@app/interfaces/error_response.interface';
+import { UserQueries } from '@app/graphql/queries/user.queries';
 
 // Define el modelo de datos para UserDTO
 export interface UserDTO {
@@ -22,10 +22,9 @@ export interface UserDTO {
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class UserService {
-
   private endpoint = environment.backendForFrontendUrl;
 
   private currentUser: User | null = null;
@@ -33,12 +32,10 @@ export class UserService {
   constructor(private keycloak: KeycloakService) {}
 
   async syncUserToBackend(): Promise<User | ErrorResponse> {
-
     const token = await this.keycloak.getToken();
-    console.log(token);
+    console.log(token); // DEBUG borrar antes de prod
 
     try {
-
       const client = new GraphQLClient(this.endpoint, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -54,24 +51,19 @@ export class UserService {
         }
       );
 
-      console.log("User Response:", data.UserResponse); // DEBUG borrar antes de prod
       return data.UserResponse;
-
+    } catch (error) {
+      console.error('Error al sincronizar el usuario:', error);
+      return { message: 'Error al sincronizar el usuario' } as ErrorResponse;
     }
-     catch (error) {
-      console.error("Error al sincronizar el usuario:", error);
-      return { message: "Error al sincronizar el usuario" } as ErrorResponse;
-     }
-    }
+  }
 
   async getUserData(): Promise<User> {
-
     if (this.currentUser) {
       return this.currentUser;
     }
 
     const token = await this.keycloak.getToken();
-
 
     const client = new GraphQLClient(this.endpoint, {
       headers: {
@@ -80,7 +72,7 @@ export class UserService {
     });
 
     const data = await client.request<{ findOneByToken: User | ErrorResponse }>(
-      UserQueries.FindOneByToken,
+      UserQueries.FindOneByToken
     );
 
     this.currentUser = data.findOneByToken as unknown as User;

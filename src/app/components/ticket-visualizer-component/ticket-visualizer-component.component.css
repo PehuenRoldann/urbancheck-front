@@ -1,5 +1,6 @@
 .ticket-visualizer-component {
   --bg-color: #6e7f8bec;
+  --extra-data-font-color: #363a3d;
   --color: white;
   --max-width: 90%;
   /* Definimos el color azul */
@@ -253,20 +254,45 @@ textarea {
 
 
 .subscribe-button-container button {
-  width: 30%;
-  height: 3vh;
+  width: 40%;
+  height: 4vh;
   font-size: 14pt;
   border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-weight: bold;
   cursor: pointer;
+  background-color: var(--bg-color);
 }
 
 .subscribe-button-container .subscribe-btn {
-  background-color: #67af69; /* Verde */
-  color: rgb(40, 100, 25);
+  --green-sub-btn: #4edf55;
+  color: var(--green-sub-btn);
+  border: 1px solid var(--green-sub-btn);
 }
 
-.subscribe-button-container .unsubscriebe-btn {
-  background-color: #df6a6a;
-  color: rgb(143, 24, 24);
+.subscribe-button-container .unsub-btn {
+  --red-sub-btn: #9c0a00;
+  color: var(--red-sub-btn);
+  border: 1px solid var(--red-sub-btn);
 }
+
+.citizen-extra-info {
+  margin-top: 10px;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+}
+
+.citizen-extra-info p {
+  margin: 0;
+  padding: 0;
+  color: var(--extra-data-font-color);
+  font-size: 11pt;
+}
+
 

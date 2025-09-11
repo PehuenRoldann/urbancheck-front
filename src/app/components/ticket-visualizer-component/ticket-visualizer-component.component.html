@@ -231,13 +231,33 @@
         *ngIf="canUnsubscribeToCurrentTicket"
         class="subscribe-button-container"
       >
-        <button class="unsubscriebe-btn" (click)="unSubscribeToTicket()">
+        <button class="unsub-btn" (click)="unSubscribeToTicket()">
           Desubscribirse
         </button>
       </div>
 
+      <div
+        *ngIf="subscriptionActionLoading"
+        style="
+          margin: 10px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+        "
+      >
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
       <div *ngIf="isAuthorOfCurrentTicket" class="subscribe-button-container">
         <h6>Eres el autor de este reclamo.</h6>
+      </div>
+
+      <!-- Información para ciudadanos -->
+      <div *ngIf="isCitizen" class="citizen-extra-info">
+        <p>Id del reclamo: {{ ticketData.id }}</p>
       </div>
 
       <div style="width: 100; height: 10vh"></div>

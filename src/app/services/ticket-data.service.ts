@@ -221,9 +221,6 @@ export class TicketService implements TicketServiceInterface {
       variables
     );
 
-    console.log('DEBUG Update Tickets List: ');
-    console.log(response.findTickets);
-
     this.ticketListSubject.next(response.findTickets);
   }
 
@@ -240,9 +237,6 @@ export class TicketService implements TicketServiceInterface {
       TicketQueries.CountTickets,
       variables
     );
-
-    console.log('DEBUG Update Tickets Counter: ');
-    console.log(response.countTickets);
 
     this.ticketCounterSubject.next(response.countTickets);
   }

@@ -1,38 +1,34 @@
-import { Component, OnInit } from "@angular/core";
-import { KeycloakService } from "keycloak-angular";
-import { KeycloakProfile } from "keycloak-js";
-import { ITestResponse } from "./core/models/response.interface";
-import { UserService } from "./services/user.service";
+import { Component, OnInit } from '@angular/core';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
+import { ITestResponse } from './core/models/response.interface';
+import { UserService } from './services/user.service';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  title = "Urbancheck";
+  title = 'Urbancheck';
   public isLogueado = false;
   public testResponse: ITestResponse | null = null;
-  public apiPing = "";
-  public apiConectorPing = "";
+  public apiPing = '';
+  public apiConectorPing = '';
   public perfilUsuario: KeycloakProfile | null = null;
   public role = false;
   constructor(
     private readonly keycloak: KeycloakService,
-    private userService: UserService,
+    private userService: UserService
   ) {}
 
   public async ngOnInit() {
     this.isLogueado = await this.keycloak.isLoggedIn();
     const token = await this.keycloak.getToken();
 
-    console.log("DEBUG TOKEN:"); // DEBUG borrar antes de prod
-    console.log(token);
     debugger;
     if (this.isLogueado) {
-      console.log("Usuario logueado"); // DEBUG borrar antes de prod
       const user = await this.userService.syncUserToBackend();
-
     }
   }
 

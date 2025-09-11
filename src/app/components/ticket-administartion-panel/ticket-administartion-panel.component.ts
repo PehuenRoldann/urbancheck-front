@@ -2,7 +2,10 @@ import { Component, Inject, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TicketFilterInput } from '@app/graphql/types/ticket.types';
 import { Ticket } from '@app/interfaces/ticket.interface';
-import { TICKET_SERVICE_INTERFACE_TOKEN, TicketServiceInterface } from '@app/interfaces/ticket.service.interface';
+import {
+  TICKET_SERVICE_INTERFACE_TOKEN,
+  TicketServiceInterface,
+} from '@app/interfaces/ticket.service.interface';
 import { TicketStatus } from '@app/interfaces/ticket_status.interface';
 import { User } from '@app/interfaces/user.interface';
 import { TicketSatusService } from '@app/services/ticket-satus.service';
@@ -38,10 +41,9 @@ export class TicketAdministartionPanelComponent implements OnInit {
     limit: this.tableRowsLimit,
   };
 
-  get currentRolId () {
+  get currentRolId() {
     return Number(this.user.role?.id) ?? -1;
   }
-
 
   constructor(
     @Inject(TICKET_SERVICE_INTERFACE_TOKEN)
@@ -53,8 +55,6 @@ export class TicketAdministartionPanelComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.user = await this.userService.getUserData();
-
-    console.log("user data: ", this.user);
 
     this.ticketDataService.ticketCounter$.subscribe((max_tickets) => {
       this.maxPagesCount = Math.ceil(max_tickets / this.tableRowsLimit);
@@ -121,6 +121,6 @@ export class TicketAdministartionPanelComponent implements OnInit {
   }
 
   onTicketUpdated($event: Event) {
-    console.log("Ticket updated");
+    console.log('Ticket updated');
   }
 }

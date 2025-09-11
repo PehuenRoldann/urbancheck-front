@@ -38,4 +38,62 @@ export class SubscriptionsService {
 
     this.userSubscriptions.next(response.getSubscriptions);
   }
+
+  public async SubscribeToTicket(
+    ticketId: string
+  ): Promise<{ code: number; message: string }> {
+    const client = await this.graphqlUtilsService.generateGqlClient();
+
+    try {
+      const response = await client.request<{
+        subscribe: Subscription;
+      }>(SubscriptionsMutations.SUBSCRIBE, {
+        input: {
+          ticketId: ticketId,
+        },
+      });
+
+      if (response.subscribe) {
+        return {
+          code: 200,
+          message: 'Se ha realizado la suscripción con éxito.',
+        };
+      } else {
+        return {
+          code: 400,
+          message: 'No se pudo realizar la suscripción.',
+        };
+      }
+    } catch (error) {
+      console.error('Error subscribing to ticket:', error);
+      return { code: 500, message: 'Error al realizar la suscripción.' };
+    }
+  }
+
+  public async UnsubscribeFromTicket(
+    ticketId: string
+  ): Promise<{ code: number; message: string }> {
+    const client = await this.graphqlUtilsService.generateGqlClient();
+
+    try {
+      const response = await client.request<{
+        unsubscribe: Subscription;
+      }>(SubscriptionsMutations.UNSUBSCRIBE, {
+        input: {
+          ticketId: ticketId,
+        },
+      });
+      if (response.unsubscribe) {
+        return {
+          code: 200,
+          message: 'Se ha cancelado la suscripción con éxito.',
+        };
+      } else {
+        return { code: 400, message: 'No se pudo cancelar la suscripción.' };
+      }
+    } catch (error) {
+      console.error('Error unsubscribing from ticket:', error);
+      return { code: 500, message: 'Error al cancelar la suscripción.' };
+    }
+  }
 }

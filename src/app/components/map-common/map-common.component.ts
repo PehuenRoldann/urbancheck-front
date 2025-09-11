@@ -62,9 +62,6 @@ export class MapCommonComponent implements OnInit, OnDestroy {
     this.userData = await this.userService.getUserData();
     this.userData.role!.id = Number(this.userData.role!.id);
 
-    console.log('DEBUG ROLE USER');
-    console.log(this.userData.role);
-
     this.geoService.initializeMap('map');
 
     this.geoService.lastCoords$

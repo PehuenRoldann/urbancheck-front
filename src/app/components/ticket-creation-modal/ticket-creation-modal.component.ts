@@ -102,7 +102,6 @@ export class TicketCreationModalComponent implements OnInit {
     });
 
     this.issueService.issuesList$.subscribe((issues) => {
-      console.log('Issues list updated:', issues); // DEBUG borrar antes de prod
       this.issuesList = issues;
     });
 
