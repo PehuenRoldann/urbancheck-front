@@ -149,12 +149,12 @@ export class TicketService implements TicketServiceInterface {
   async UpdateMarkersData(): Promise<void> {
     const client = await this.generateGqlClient();
 
-    const response = await client.request<{ findTickets: Ticket[] }>(
-      TicketQueries.FindTickets
+    const response = await client.request<{ getMarkersData: Ticket[] }>(
+      TicketQueries.GET_MARKERS_DATA
     );
 
     const markerData: MarkerData[] = [];
-    response.findTickets.forEach((element: Ticket) => {
+    response.getMarkersData.forEach((element: Ticket) => {
       markerData.push({
         id: element.id,
         latitude: element.latitude!,

@@ -140,4 +140,14 @@ export class TicketQueries {
       countTickets(filter: $filter)
     }
   `;
+
+  static readonly GET_MARKERS_DATA = gql`
+    query GetMarkersData {
+      getMarkersData {
+        id
+        latitude
+        longitude
+      }
+    }
+  `;
 }

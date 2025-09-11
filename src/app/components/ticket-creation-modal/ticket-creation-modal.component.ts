@@ -240,10 +240,6 @@ export class TicketCreationModalComponent implements OnInit {
     return `${day}/${month}/${year} ${hours}:${minutes}`; // Retorna el formato deseado
   }
 
-  getMunicipalDependencyLabel(key: string): string {
-    return MunicipalIssues[key as keyof typeof MunicipalIssues] || key;
-  }
-
   CanContinue(): boolean {
     if (this.processStep == 0 && this.ticketCreationInput.issueId == null) {
       return false;
