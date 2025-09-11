@@ -12,19 +12,33 @@
             alt="mapa"
           />
         </span>
+        <span style="display: flex; align-items: center">
+          <input
+            id="search-ticket-input"
+            type="text"
+            placeholder="Buscar ticket por ID..."
+            [(ngModel)]="searchTicktId"
+          />
+          <img
+            id="search-ticket-btn"
+            src="assets/images/lupa.svg"
+            alt="Buscar"
+            (click)="searchTicketById()"
+          />
+        </span>
         <span class="ticket-admin-panel-nav-title">
           <h4>Panel de administración</h4>
         </span>
       </nav>
     </div>
     <div>
-      <div *ngIf="showSpinner; else ticketAdminPanel">
-        <app-spinner></app-spinner>
-      </div>
-      <ng-template #ticketAdminPanel>
-        <div class="ticket-admin-panel-dashboard-container">
-          <div class="ticket-admin-panel-list-container">
-            <div class="ticket-admin-panel-list-table-div">
+      <div class="ticket-admin-panel-dashboard-container">
+        <div class="ticket-admin-panel-list-container">
+          <div class="ticket-admin-panel-list-table-div">
+            <div style="width: 100%" *ngIf="showSpinner; else ticketListTable">
+              <app-spinner></app-spinner>
+            </div>
+            <ng-template #ticketListTable>
               <table class="table ticket-table">
                 <thead>
                   <tr>
@@ -64,102 +78,108 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
-            <div class="ticket-admin-panel-list-nav-pagination-div">
-              <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                  <li
-                    *ngIf="!(currentPageNumber === 1)"
-                    class="page-item"
-                    style="margin-right: 10px"
-                  >
-                    <a
-                      class="page-link"
-                      (click)="changePageTo(currentPageNumber - 1)"
-                    >
-                      Anterior
-                    </a>
-                  </li>
-
-                  <span
-                    *ngIf="!currentPagesNavigator.includes(currentPageNumber)"
-                  >
-                    <span style="width: 10px"></span>
-                    <span class="page-item">
-                      <a class="page-link" (click)="changePageTo(1)">1</a>
-                    </span>
-                  </span>
-
-                  <span
-                    *ngIf="!currentPagesNavigator.includes(currentPageNumber)"
-                  >
-                    ...
-                  </span>
-
-                  <li
-                    class="page-item"
-                    *ngFor="let number of currentPagesNavigator"
-                  >
-                    <a
-                      class="page-link"
-                      [ngClass]="{
-                        'page-link-current': number === currentPageNumber
-                      }"
-                      (click)="changePageTo(number)"
-                    >
-                      {{ number }}
-                    </a>
-                  </li>
-
-                  <span
-                    *ngIf="!currentPagesNavigator.includes(currentPageNumber)"
-                  >
-                    ...
-                  </span>
-                  <span
-                    *ngIf="!currentPagesNavigator.includes(currentPageNumber)"
-                  >
-                    <span class="page-item"
-                      ><a class="page-link">{{ maxPagesCount }}</a></span
-                    >
-                    <span style="width: 10px"></span>
-                  </span>
-
-                  <li
-                    *ngIf="!(currentPageNumber === maxPagesCount)"
-                    class="page-item"
-                    style="margin-left: 10px"
-                  >
-                    <a
-                      class="page-link"
-                      (click)="changePageTo(currentPageNumber + 1)"
-                    >
-                      Siguiente
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
+            </ng-template>
           </div>
-          <div class="ticket-admin-panel-ticket-container">
-            <app-side-panel
-              mode="persistent"
-              position="right"
-              [background]="'#4B5C67CC'"
-              width="35vw"
-              [hasBackdrop]="false"
-              [closeOnBackdrop]="false"
-            >
-              <!-- contenido del panel -->
-              <app-ticket-visualizer-component
-                [ticketId]="selectedTicketId"
-                [userRoleId]="currentRolId"
-                [user]="user"
-              ></app-ticket-visualizer-component>
-            </app-side-panel>
+          <div class="ticket-admin-panel-list-nav-pagination-div">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center">
+                <li
+                  *ngIf="!(currentPageNumber === 1)"
+                  class="page-item"
+                  style="margin-right: 10px"
+                >
+                  <a
+                    class="page-link"
+                    (click)="changePageTo(currentPageNumber - 1)"
+                  >
+                    Anterior
+                  </a>
+                </li>
+
+                <span
+                  *ngIf="!currentPagesNavigator.includes(currentPageNumber)"
+                >
+                  <span style="width: 10px"></span>
+                  <span class="page-item">
+                    <a class="page-link" (click)="changePageTo(1)">1</a>
+                  </span>
+                </span>
+
+                <span
+                  *ngIf="!currentPagesNavigator.includes(currentPageNumber)"
+                >
+                  ...
+                </span>
+
+                <li
+                  class="page-item"
+                  *ngFor="let number of currentPagesNavigator"
+                >
+                  <a
+                    class="page-link"
+                    [ngClass]="{
+                      'page-link-current': number === currentPageNumber
+                    }"
+                    (click)="changePageTo(number)"
+                  >
+                    {{ number }}
+                  </a>
+                </li>
+
+                <span
+                  *ngIf="!currentPagesNavigator.includes(currentPageNumber)"
+                >
+                  ...
+                </span>
+                <span
+                  *ngIf="!currentPagesNavigator.includes(currentPageNumber)"
+                >
+                  <span class="page-item"
+                    ><a class="page-link">{{ maxPagesCount }}</a></span
+                  >
+                  <span style="width: 10px"></span>
+                </span>
+
+                <li
+                  *ngIf="!(currentPageNumber === maxPagesCount)"
+                  class="page-item"
+                  style="margin-left: 10px"
+                >
+                  <a
+                    class="page-link"
+                    (click)="changePageTo(currentPageNumber + 1)"
+                  >
+                    Siguiente
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
-      </ng-template>
+        <div class="ticket-admin-panel-ticket-container">
+          <app-side-panel
+            mode="persistent"
+            position="right"
+            [background]="'#4B5C67CC'"
+            width="35vw"
+            [hasBackdrop]="false"
+            [closeOnBackdrop]="false"
+          >
+            <!-- contenido del panel -->
+            <app-ticket-visualizer-component
+              [ticketId]="selectedTicketId"
+              [userRoleId]="currentRolId"
+              [user]="user"
+            ></app-ticket-visualizer-component>
+          </app-side-panel>
+        </div>
+      </div>
+      <!-- <div *ngIf="showSpinner; else ticketAdminPanel">
+        <app-spinner></app-spinner>
+      </div>
+      <ng-template #ticketAdminPanel>
+
+      </ng-template> -->
     </div>
   </div>
 </div>
