@@ -23,8 +23,42 @@
             id="search-ticket-btn"
             src="assets/images/lupa.svg"
             alt="Buscar"
-            (click)="searchTicketById()"
+            (click)="search()"
           />
+        </span>
+        <span>
+          <label class="ticket-nav-filter-label" for="">Prioridad: </label>
+          <select
+            class="ticket-nav-filter-select"
+            [(ngModel)]="selectedPriority"
+          >
+            <option *ngFor="let priority of PrioritiesArr" [value]="priority">
+              {{ priority }}
+            </option>
+          </select>
+          <label class="ticket-nav-filter-label" for="">Estado: </label>
+          <select class="ticket-nav-filter-select" [(ngModel)]="selectedStatus">
+            <option *ngFor="let status of StatusesArr" [value]="status">
+              {{ status }}
+            </option>
+          </select>
+          <label class="ticket-nav-filter-label" for="">Dependencia: </label>
+          <select
+            class="ticket-nav-filter-select"
+            [(ngModel)]="selectedDependency"
+          >
+            <option
+              *ngFor="let dependency of DependenciesArr"
+              [value]="dependency"
+            >
+              {{ dependency }}
+            </option>
+          </select>
+        </span>
+        <span>
+          <button class="btn btn-secondary" (click)="removeFilters()">
+            Limpiar filtros
+          </button>
         </span>
         <span class="ticket-admin-panel-nav-title">
           <h4>Panel de administración</h4>
@@ -46,7 +80,7 @@
                     <th scope="col">Estado</th>
                     <th scope="col">Autor</th>
                     <th scope="col">Alta</th>
-                    <th scope="col">Dependencia</th>
+                    <th scope="col">Problemática</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -63,7 +97,11 @@
                     <td>#{{ minimized_ticket_id(ticket.id) }}...</td>
                     <td>
                       <app-pill
-                        [ticketState]="ticket.current_status?.description!"
+                        [ticketState]="
+                          ticket.current_status?.description! === 'V_lido'
+                            ? 'Válido'
+                            : ticket.current_status?.description!
+                        "
                       />
                     </td>
                     <td>
@@ -74,7 +112,7 @@
                       }}
                     </td>
                     <td>{{ formatDate(ticket.its!) }}</td>
-                    <td>{{ ticket.dependency?.name }}</td>
+                    <td>{{ ticket.issue?.description }}</td>
                   </tr>
                 </tbody>
               </table>

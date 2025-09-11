@@ -10,12 +10,19 @@ import { TicketStatus } from '@app/interfaces/ticket_status.interface';
 import { User } from '@app/interfaces/user.interface';
 import { TicketSatusService } from '@app/services/ticket-satus.service';
 import { UserService } from '@app/services/user.service';
+import { Priorities, Statuses, DependenciesMap } from '@app/utils/consts';
+import { findKeyByValue } from '@app/utils/utils';
+
 @Component({
   selector: 'app-ticket-administartion-panel',
   templateUrl: './ticket-administartion-panel.component.html',
   styleUrls: ['./ticket-administartion-panel.component.css'],
 })
 export class TicketAdministartionPanelComponent implements OnInit {
+  selectedPriority: string = '';
+  selectedStatus: string = '';
+  selectedDependency: string = '';
+
   minimized_ticket_id(arg0: string) {
     return arg0.split('-')[0];
   }
@@ -38,6 +45,18 @@ export class TicketAdministartionPanelComponent implements OnInit {
   };
   get currentRolId() {
     return Number(this.user.role?.id) ?? -1;
+  }
+
+  get PrioritiesArr() {
+    return Array.from(Priorities.values());
+  }
+
+  get StatusesArr() {
+    return Array.from(Statuses.values());
+  }
+
+  get DependenciesArr() {
+    return Array.from(DependenciesMap.values());
   }
   constructor(
     @Inject(TICKET_SERVICE_INTERFACE_TOKEN)
@@ -100,12 +119,31 @@ export class TicketAdministartionPanelComponent implements OnInit {
   onTicketUpdated($event: Event) {
     console.log('Ticket updated');
   }
-  searchTicketById() {
+  search() {
     this.showSpinner = true;
+
     this.filter.page = 1;
     this.currentPageNumber = 1;
     this.filter.ticket_id = this.searchTicktId ? this.searchTicktId : undefined;
+
+    const priority_id = findKeyByValue(Priorities, this.selectedPriority);
+    const status_id = findKeyByValue(Statuses, this.selectedStatus);
+    const dependency_id = findKeyByValue(
+      DependenciesMap,
+      this.selectedDependency
+    );
+
+    this.filter.priority_id = priority_id ?? undefined;
+    this.filter.status_id = status_id ?? undefined;
+    this.filter.dependency_id = dependency_id ?? undefined;
+
     this.ticketDataService.UpdateTicketList(this.filter);
     this.ticketDataService.UpdateTicketCounter(this.filter);
+  }
+
+  removeFilters() {
+    this.selectedPriority = '';
+    this.selectedStatus = '';
+    this.selectedDependency = '';
   }
 }

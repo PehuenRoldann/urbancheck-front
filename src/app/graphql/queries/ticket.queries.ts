@@ -117,6 +117,11 @@ export class TicketQueries {
             first_name
             last_name
           }
+          issue {
+            id
+            description
+            dependency_id
+          }
           current_status {
             id
             description

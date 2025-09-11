@@ -162,3 +162,22 @@
   aspect-ratio: 1 / 1;
 
 }
+
+.ticket-nav-filter-label {
+  font-weight: semi-bold;
+  color: white;
+  margin-right: 20px;
+  margin-left: 10px;
+}
+
+.ticket-nav-filter-select {
+    margin-left: 20px;
+    max-height: 40px;
+    width: 150px;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+    padding: 5px;
+    overflow-x: hidden;
+    background-color: rgba(245, 245, 245, 0.966);
+}

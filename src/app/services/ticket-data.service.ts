@@ -222,6 +222,8 @@ export class TicketService implements TicketServiceInterface {
     );
 
     this.ticketListSubject.next(response.findTickets);
+    console.log('Tickets cargados:'); // DEBUG
+    console.log(response.findTickets);
   }
 
   async UpdateTicketCounter(filter?: TicketFilterInput): Promise<void> {

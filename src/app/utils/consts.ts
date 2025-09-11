@@ -23,3 +23,17 @@ export const RolesMap = new Map([
   [3, 'Responsable de dependencia'],
   [4, 'Miembro de cuadrilla'],
 ]);
+
+export const DependenciesMap = new Map<number, string>([
+  [1, 'Arbolado urbano'],
+  [2, 'Alumbrado público'],
+  [3, 'Mantenimiento de cloaca y agua potable'],
+  [4, 'Recolección de residuos'],
+  [5, 'Limpieza de calles'],
+  [6, 'Distribución de riego y agua potable'],
+  [7, 'Control urbano y de tránsito'],
+  [8, 'Vehículos abandonados'],
+  [9, 'Conservación de espacios públicos'],
+  [10, 'Atención sanitaria de animales'],
+  [11, 'Control industrial y de plagas'],
+]);
